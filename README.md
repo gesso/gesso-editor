@@ -26,4 +26,4 @@ There's a back and forth between programmers, designers, and users in the form o
 
 # References
 
-This is based on a re-thinking of Looper.
+This is based on a re-thinking of Looper to include code management and development process organization tools.
