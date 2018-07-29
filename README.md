@@ -23,3 +23,7 @@ There's a back and forth between programmers, designers, and users in the form o
 - Possibly manage state of blocks on the board (e.g., move from "doing" to "ready for testing")
 - Further decompose a block at the specified level of abstraction into sub-blocks that can be added to the backlog (this meanas programmers also use the block level editor to some extent)
 - Search code blocks while coding (might be libraries)
+
+# References
+
+This is based on a re-thinking of Looper.
