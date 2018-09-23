@@ -1,0 +1,10 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+
+.drag-class {
+  background-color: "red";
+  opacity: 0.5;
+}
