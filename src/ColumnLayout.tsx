@@ -84,23 +84,24 @@ class ColumnLayoutView extends React.Component<Props, {}> {
     return index => blocks[index];
   };
 
-  private handleDrop = group => {
+  private handleDrop = droppedColumnLayout => {
     return dropResult => {
       const { removedIndex, addedIndex, payload, element } = dropResult;
       if (this.props.targetBlock) {
         // console.log(`Composing block ${JSON.stringify(payload)} in block ${JSON.stringify(this.state.targetBlock)}.`)
         // console.log(`Removing block ${JSON.stringify(payload)} from group ${}`)
-        const reorderedBoards: IColumnLayout[] = this.props.layoutValue.columnLayouts.reduce(
+        const reorderedColumnLayouts: IColumnLayout[] = this.props.layoutValue.columnLayouts.reduce(
           (value, groupState) => {
-            if (groupState.id === group.id) {
-              const board = utils.applyCompose(
+            if (groupState.id === droppedColumnLayout.id) {
+              const reorderedColumnLayout = utils.applyCompose(
                 groupState,
                 dropResult,
-                group.id,
+                droppedColumnLayout.id,
+                // TODO(@mgub): [BUG] targetBlock is a split brain across this file and Layout.tsx. Move to Redux.
                 this.props.targetBlock
               );
-              if (board.blockViews.length > 0) {
-                value.push(board);
+              if (reorderedColumnLayout.blockViews.length > 0) {
+                value.push(reorderedColumnLayout);
               }
               return value;
             } else {
@@ -112,18 +113,13 @@ class ColumnLayoutView extends React.Component<Props, {}> {
         );
 
         this.props.dispatch({
-          reorderedBoards,
+          reorderedColumnLayouts,
           type: "HANDLE_DROP"
         });
-        // const updatedState: IState = {
-        //   ...this.state,
-        //   groups: reorderedBoards
-        // };
-        // this.setState(updatedState);
       } else {
         console.log(
           `DROPPED in ${
-            group.id
+            droppedColumnLayout.id
           }: removedIndex: ${removedIndex}, addedIndex: ${addedIndex}, payload: ${JSON.stringify(
             payload,
             null,
@@ -131,23 +127,24 @@ class ColumnLayoutView extends React.Component<Props, {}> {
           )}, element: ${element}}`
         );
 
-        const reorderedBoards: IColumnLayout[] = this.props.layoutValue.columnLayouts.reduce(
-          (value, groupValue) => {
-            if (groupValue.id === group.id) {
-              const board = applyDrag(groupValue, dropResult);
-              if (board.blockViews.length > 0) {
-                value.push(board);
+        const reorderedColumnLayouts: IColumnLayout[] = this.props.layoutValue.columnLayouts.reduce(
+          (value, columnLayout) => {
+            if (columnLayout.id === droppedColumnLayout.id) {
+              const reorderedColumnLayout = applyDrag(columnLayout, dropResult);
+              if (reorderedColumnLayout.blockViews.length > 0) {
+                value.push(reorderedColumnLayout);
               }
               return value;
             } else {
-              value.push(groupValue);
+              value.push(columnLayout);
               return value;
             }
           },
           []
         );
+
         this.props.dispatch({
-          reorderedBoards,
+          reorderedColumnLayouts,
           type: "HANDLE_DROP"
         });
       }
