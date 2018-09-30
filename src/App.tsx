@@ -1,5 +1,7 @@
 import * as React from "react";
-import Groups from "./Groups";
+import { Provider } from "react-redux";
+import Layout from "./Layout";
+import { getStore, store } from "./store/store";
 import Tasks from "./Tasks";
 
 const optionStyle = {
@@ -27,53 +29,61 @@ class App extends React.Component<{}, IState> {
 
   public render() {
     return (
-      <div
-        style={{
-          alignItems: "center",
-          display: "flex",
-          flexDirection: "column",
-          height: "100%",
-          justifyContent: "center",
-          margin: 0
-        }}>
+      <Provider store={store}>
         <div
           style={{
+            alignItems: "center",
             display: "flex",
-            height: "50px",
+            flexDirection: "column",
+            height: "100%",
             justifyContent: "center",
-            marginRight: "50px",
-            marginTop: "50px",
-            minHeight: "50px"
-          }}>
+            margin: 0
+          }}
+          onClick={this.handleClickWhitespace}
+          onDrag={this.handleDragWhitespace}>
           <div
-            style={optionStyle}
-            onClick={this.handleClickBlock}>
-            blocks
+            style={{
+              display: "flex",
+              height: "50px",
+              justifyContent: "center",
+              marginRight: "50px",
+              marginTop: "50px",
+              minHeight: "50px"
+            }}>
+            <div style={optionStyle} onClick={this.handleClickBlock}>
+              blocks
+            </div>
+            <div style={optionStyle} onClick={this.handleClickTask}>
+              tasks
+            </div>
           </div>
-          <div
-            style={optionStyle}
-            onClick={this.handleClickTask}>
-            tasks
-          </div>
+          <Layout />
         </div>
-        {this.state.mode === "block" ? <Groups /> : <Tasks />}
-      </div>
+      </Provider>
     );
   }
 
   private handleClickBlock = event => {
-    this.setMode("block")
-  }
+    this.setMode("block");
+  };
 
   private handleClickTask = event => {
-    this.setMode("task")
-  }
+    this.setMode("task");
+  };
+
+  private handleClickWhitespace = event => {
+    console.log("Clicked whitespace.");
+  };
+
+  private handleDragWhitespace = event => {
+    console.log("Dragged whitespace.");
+  };
 
   private setMode = (mode: ModeType) => {
     this.setState({
       mode
     });
-  }
+  };
 }
 
 export default App;

@@ -1,19 +1,19 @@
-import { IBlockType } from "./store/types";
+import { IBlock, IBlockView, IColumnLayout } from "./types";
 
 interface IApplyDrag {
-  blockList: IBlockType;
+  blockList: IBlock;
 }
 
 export const applyCompose = (
-  blockList: any[],
+  board: IColumnLayout,
   dragResult: any,
   targetBlockList: string,
-  targetBlock: IBlockType
-) => {
+  targetBlock: IBlock
+): IColumnLayout => {
   console.log("applyCompose");
   const { removedIndex, addedIndex, payload } = dragResult;
   if (removedIndex === null && addedIndex === null) {
-    return blockList;
+    return board;
   }
 
   console.log(
@@ -22,38 +22,47 @@ export const applyCompose = (
     )}.`
   );
 
-  console.log(`Removing block ${JSON.stringify(payload)} from group ${removedIndex}: ${targetBlockList}`)
+  console.log(
+    `Removing block ${JSON.stringify(
+      payload
+    )} from group ${removedIndex}: ${targetBlockList}`
+  );
 
-  const result: IBlockType[] = [...blockList];
-  let movedBlock: IBlockType = payload;
+  const result = [...board.blockViews];
+  let movedBlock: IBlockView = payload;
 
   // Remove the block from the source block list.
   if (removedIndex !== null) {
     movedBlock = result.splice(removedIndex, 1)[0];
-    console.log(`Removed index ${removedIndex}`)
+    console.log(`Removed index ${removedIndex}`);
   }
 
   // Move the block into the target block's block list.
   if (addedIndex !== null) {
     // result.splice(addedIndex, 0, itemToAdd);
     if (!targetBlock.blocks) {
-      targetBlock.blocks = [payload]
+      targetBlock.blocks = [payload];
     } else {
-      targetBlock.blocks.push(payload)
+      targetBlock.blocks.push(payload);
     }
-    console.log(`Added index ${addedIndex}`)
+    console.log(`Added index ${addedIndex}`);
   }
 
-  return result;
+  board.blockViews = result;
+
+  return board;
 };
 
-export const applyDrag = (blockList: any[], dragResult: any) => {
+export const applyDrag = (
+  board: IColumnLayout,
+  dragResult: any
+): IColumnLayout => {
   const { removedIndex, addedIndex, payload } = dragResult;
   if (removedIndex === null && addedIndex === null) {
-    return blockList;
+    return board;
   }
 
-  const result = [...blockList];
+  const result = [...board.blockViews];
   let itemToAdd = payload;
 
   if (removedIndex !== null) {
@@ -64,8 +73,14 @@ export const applyDrag = (blockList: any[], dragResult: any) => {
     result.splice(addedIndex, 0, itemToAdd);
   }
 
-  return result;
+  board.blockViews = result;
+
+  return board;
 };
 
 // click block, shows search box to search functions on board (in project)
 // return will reference it, control+return will copy it
+
+export const getRandomInt = max => {
+  return Math.floor(Math.random() * Math.floor(max));
+};

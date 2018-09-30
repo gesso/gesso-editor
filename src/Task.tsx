@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Draggable } from "react-smooth-dnd";
-import { IBlockType } from "./store/types";
+import { IBlock } from "./types";
 
 const blockStyle = {
   backgroundColor: "#fff",
@@ -19,10 +19,10 @@ const blockStyle = {
 
 interface IProps {
   key: string;
-  blockValue: IBlockType;
+  blockValue: IBlock;
 
-  onTarget: (block: IBlockType) => void;
-  onUntarget: (block: IBlockType) => void;
+  onTarget: (block: IBlock) => void;
+  onUntarget: (block: IBlock) => void;
 }
 
 interface IState {

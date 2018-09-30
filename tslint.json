@@ -7,10 +7,13 @@
       "coverage/lcov-report/*.js"
     ]
   },
-  // <REMOVE_WHEN_POSSIBLE>
   "rules": {
+    "semicolon": false,
+    "object-literal-sort-keys": false,
+    // Alternative: "object-literal-sort-keys": [true, "match-declaration-order"],
+    // <REMOVE_WHEN_POSSIBLE>
     "no-debugger": false,
-    "no-console": [false]
+    "no-console": false
+    // </REMOVE_WHEN_POSSIBLE>
   }
-  // </REMOVE_WHEN_POSSIBLE>
 }

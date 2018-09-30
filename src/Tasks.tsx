@@ -1,8 +1,8 @@
 import * as React from "react";
 import { Container } from "react-smooth-dnd";
 import * as store from "./store/store";
-import { IBlockType } from "./store/types";
 import Task from "./Task";
+import { IBlock } from "./types";
 import { applyDrag } from "./utils";
 import * as utils from "./utils";
 
@@ -19,14 +19,14 @@ const groupStyle: React.CSSProperties = {
 };
 
 interface IState {
-  items1?: IBlockType[];
-  items2?: IBlockType[];
-  items3?: IBlockType[];
-  items4?: IBlockType[];
-  itemsLeft?: IBlockType[];
-  itemsRight?: IBlockType[];
+  items1?: IBlock[];
+  items2?: IBlock[];
+  items3?: IBlock[];
+  items4?: IBlock[];
+  itemsLeft?: IBlock[];
+  itemsRight?: IBlock[];
 
-  targetBlock: IBlockType | null;
+  targetBlock: IBlock | null;
 }
 
 class Tasks extends React.Component<{}, IState> {
@@ -34,10 +34,10 @@ class Tasks extends React.Component<{}, IState> {
     super(props);
 
     this.state = {
-      items1: store.fetchBlocks(5),
-      items2: store.fetchBlocks(10),
-      items3: store.fetchBlocks(3),
-      items4: store.fetchBlocks(8),
+      // items1: store.fetchBlocks(5),
+      // items2: store.fetchBlocks(10),
+      // items3: store.fetchBlocks(3),
+      // items4: store.fetchBlocks(8),
       itemsLeft: [],
       itemsRight: [],
 
@@ -178,27 +178,26 @@ class Tasks extends React.Component<{}, IState> {
     );
   }
 
-  private handleGetChildPayload = (blocks: IBlockType[]) => {
+  private handleGetChildPayload = (blocks: IBlock[]) => {
     return index => blocks[index];
   };
 
-  private handleDrop = (blockListKey: string, blocks: IBlockType[]) => {
+  private handleDrop = (blockListKey: string, blocks: IBlock[]) => {
     return dropResult => {
       const { removedIndex, addedIndex, payload, element } = dropResult;
       if (this.state.targetBlock) {
         // console.log(`Composing block ${JSON.stringify(payload)} in block ${JSON.stringify(this.state.targetBlock)}.`)
         // console.log(`Removing block ${JSON.stringify(payload)} from group ${}`)
-
-        const updatedState: IState = {
-          ...this.state,
-          [blockListKey]: utils.applyCompose(
-            blocks,
-            dropResult,
-            blockListKey,
-            this.state.targetBlock
-          )
-        };
-        this.setState(updatedState);
+        // const updatedState: IState = {
+        //   ...this.state,
+        //   [blockListKey]: utils.applyCompose(
+        //     blocks,
+        //     dropResult,
+        //     blockListKey,
+        //     this.state.targetBlock
+        //   )
+        // };
+        // this.setState(updatedState);
       } else {
         console.log(
           `DROPPED in ${blockListKey}: removedIndex: ${removedIndex}, addedIndex: ${addedIndex}, payload: ${JSON.stringify(
@@ -208,8 +207,8 @@ class Tasks extends React.Component<{}, IState> {
           )}, element: ${element}}`
         );
         const updatedState: IState = {
-          ...this.state,
-          [blockListKey]: applyDrag(blocks, dropResult)
+          ...this.state
+          // [blockListKey]: applyDrag(blocks, dropResult)
         };
         this.setState(updatedState);
       }
@@ -226,14 +225,14 @@ class Tasks extends React.Component<{}, IState> {
     );
   };
 
-  private onTarget = (block: IBlockType) => {
+  private onTarget = (block: IBlock) => {
     console.log(`Targeting block ${block.id}.`);
     this.setState({
       targetBlock: block
     });
   };
 
-  private onUntarget = (block: IBlockType) => {
+  private onUntarget = (block: IBlock) => {
     console.log(`Untargeting block ${block.id}.`);
     this.setState({
       targetBlock: null
