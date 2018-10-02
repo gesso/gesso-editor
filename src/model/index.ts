@@ -31,10 +31,12 @@ export const generateLayout = (input: IGenerateLayoutInput): ILayout => {
   const blocksPerColumnCount = input.blocks.length / columnCount;
   const layout: ILayout = {
     id: uuidv4(),
-    columnLayouts: []
+    columnLayouts: [],
+    views: {}
   };
   // TODO(mgub): Generate layout.
   _.times(columnCount, index => {
+    // Create views for blocks.
     const blockViews: IBlockView[] = input.blocks
       .slice(
         index * blocksPerColumnCount,
@@ -46,12 +48,17 @@ export const generateLayout = (input: IGenerateLayoutInput): ILayout => {
           id: uuidv4()
         } as IBlockView;
       });
+    // Save block views.
+    _.each(blockViews, blockView => {
+      layout.views[blockView.id] = blockView;
+    });
+    // Create column layout.
     const columnLayout: IColumnLayout = {
-      // blocks: generateBlocks(6),
       blockViews,
       id: uuidv4(),
       name: projectNameGenerator({ words: 2, number: false }).dashed
     };
+    // Add column to layout.
     layout.columnLayouts.push(columnLayout);
   });
   console.log(`layout: ${JSON.stringify(layout, null, 2)}`);

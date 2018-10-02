@@ -11,6 +11,10 @@
 
 // export type IType = IBlockType
 
+export interface IEntity {
+  id: string;
+}
+
 export interface IBlock {
   id: string;
   name: string;
@@ -28,6 +32,7 @@ export interface ITask {
 export interface ILayout {
   id: string;
   columnLayouts: IColumnLayout[];
+  views: IViewStore;
 }
 
 // TODO: Refactor this to also be an IBlockType
@@ -52,8 +57,15 @@ export interface IBlockView {
 export interface IState {
   blocks: IBlock[];
   layout: ILayout;
-  targetBlock: IBlock | null;
+  targetBlock: IBlockView;
+  views: IViewStore;
 }
+
+export type View = IBlockView;
+
+export interface IViewStore {
+  [index: number]: View;
+} // IEntity;
 
 export interface IHandleDropAction {
   reorderedBoards: IColumnLayout[];

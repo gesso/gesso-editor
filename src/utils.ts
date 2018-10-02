@@ -1,24 +1,27 @@
-import { IBlock, IBlockView, IColumnLayout } from "./types";
+import { IBlock, IBlockView, IColumnLayout, IState } from "./types";
 
 interface IApplyDrag {
   blockList: IBlock;
 }
 
+// TODO: Replace with Redux action.
 export const applyCompose = (
-  board: IColumnLayout,
+  columnLayout: IColumnLayout,
   dragResult: any,
   targetBlockList: string,
-  targetBlock: IBlock
+  targetBlockView: IBlockView,
+  state: IState,
+  action
 ): IColumnLayout => {
   console.log("applyCompose");
   const { removedIndex, addedIndex, payload } = dragResult;
   if (removedIndex === null && addedIndex === null) {
-    return board;
+    return columnLayout;
   }
 
   console.log(
     `Composing block ${JSON.stringify(payload)} in block ${JSON.stringify(
-      targetBlock
+      targetBlockView
     )}.`
   );
 
@@ -28,41 +31,49 @@ export const applyCompose = (
     )} from group ${removedIndex}: ${targetBlockList}`
   );
 
-  const result = [...board.blockViews];
-  let movedBlock: IBlockView = payload;
+  const result = [...columnLayout.blockViews];
+  let movedBlockView: IBlockView = payload;
 
   // Remove the block from the source block list.
   if (removedIndex !== null) {
-    movedBlock = result.splice(removedIndex, 1)[0];
+    movedBlockView = result.splice(removedIndex, 1)[0];
     console.log(`Removed index ${removedIndex}`);
   }
 
   // Move the block into the target block's block list.
   if (addedIndex !== null) {
     // result.splice(addedIndex, 0, itemToAdd);
-    if (!targetBlock.blocks) {
-      targetBlock.blocks = [payload];
+    const block = state.blocks.filter(block2 => {
+      return block2.id === targetBlockView.blockId;
+    })[0];
+    // TODO:
+    // const block = state.blocks[targetBlockView.blockId];
+    if (!block.blocks) {
+      block.blocks = [payload];
     } else {
-      targetBlock.blocks.push(payload);
+      block.blocks.push(payload);
     }
     console.log(`Added index ${addedIndex}`);
   }
 
-  board.blockViews = result;
+  columnLayout.blockViews = result;
 
-  return board;
+  return columnLayout;
 };
 
+// TODO: Replace with Redux action.
 export const applyDrag = (
-  board: IColumnLayout,
-  dragResult: any
+  columnLayout: IColumnLayout,
+  dragResult: any,
+  state: IState,
+  action
 ): IColumnLayout => {
   const { removedIndex, addedIndex, payload } = dragResult;
   if (removedIndex === null && addedIndex === null) {
-    return board;
+    return columnLayout;
   }
 
-  const result = [...board.blockViews];
+  const result = [...columnLayout.blockViews];
   let itemToAdd = payload;
 
   if (removedIndex !== null) {
@@ -73,9 +84,9 @@ export const applyDrag = (
     result.splice(addedIndex, 0, itemToAdd);
   }
 
-  board.blockViews = result;
+  columnLayout.blockViews = result;
 
-  return board;
+  return columnLayout;
 };
 
 // click block, shows search box to search functions on board (in project)
