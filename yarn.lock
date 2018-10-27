@@ -73,10 +73,11 @@
     "@types/slate" "*"
     immutable "^3.8.2"
 
-"@types/slate@*", "@types/slate@0.40.0":
-  version "0.40.0"
-  resolved "https://registry.yarnpkg.com/@types/slate/-/slate-0.40.0.tgz#cc1288bd3d7ba56444fecbab5a7c292d101d263f"
+"@types/slate@*", "@types/slate@0.43.0":
+  version "0.43.0"
+  resolved "https://registry.yarnpkg.com/@types/slate/-/slate-0.43.0.tgz#40ef0204e69397d54dc06f3d145dea8c48d8286d"
   dependencies:
+    "@types/react" "*"
     immutable "^3.8.2"
 
 "@types/uuid@3.4.4":
