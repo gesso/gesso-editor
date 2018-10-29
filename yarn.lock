@@ -5701,9 +5701,9 @@ react-error-overlay@^4.0.1:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/react-error-overlay/-/react-error-overlay-4.0.1.tgz#417addb0814a90f3a7082eacba7cee588d00da89"
 
-react-icons-kit@1.1.12:
-  version "1.1.12"
-  resolved "https://registry.yarnpkg.com/react-icons-kit/-/react-icons-kit-1.1.12.tgz#1018285d25cf122277dff5e3fcf94a4240e85faa"
+react-icons-kit@1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/react-icons-kit/-/react-icons-kit-1.2.0.tgz#2964b13cebc35f0083cd001a82696a88b04d2512"
   dependencies:
     camel-case "^3.0.0"
     prop-types "^15.5.8"
