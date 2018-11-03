@@ -1,30 +1,30 @@
-import * as React from "react";
-import { Provider } from "react-redux";
-import Layout from "./Layout";
-import { getStore, store } from "./store/store";
-import Tasks from "./Tasks";
+import * as React from "react"
+import { Provider } from "react-redux"
+import Layout from "./Layout"
+import { store } from "./store/store"
 
 const optionStyle = {
+  color: "#a8a8a8",
   padding: "10px"
-};
+}
 
-type BlockType = "block";
+type BlockType = "block"
 
-type TaskType = "task";
+type TaskType = "task"
 
-type ModeType = BlockType | TaskType;
+type ModeType = BlockType | TaskType
 
 interface IState {
-  mode: ModeType;
+  mode: ModeType
 }
 
 class App extends React.Component<{}, IState> {
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       mode: "block"
-    };
+    }
   }
 
   public render() {
@@ -50,40 +50,61 @@ class App extends React.Component<{}, IState> {
               marginTop: "50px",
               minHeight: "50px"
             }}>
-            <div style={optionStyle} onClick={this.handleClickBlock}>
-              blocks
+            <div
+              style={optionStyle}
+              onClick={this.handleClickModeOption("code")}>
+              code
             </div>
-            <div style={optionStyle} onClick={this.handleClickTask}>
-              tasks
+            <div style={optionStyle}>&rarr;</div>
+            <div
+              style={optionStyle}
+              onClick={this.handleClickModeOption("block")}>
+              <strong>block</strong>
+            </div>
+            <div style={optionStyle}>&rarr;</div>
+            <div
+              style={optionStyle}
+              onClick={this.handleClickModeOption("task")}>
+              task
+            </div>
+            <div style={optionStyle}>&rarr;</div>
+            <div
+              style={optionStyle}
+              onClick={this.handleClickModeOption("plan")}>
+              plan
+            </div>
+            <div style={optionStyle}>&rarr;</div>
+            <div
+              style={optionStyle}
+              onClick={this.handleClickModeOption("deploy")}>
+              deploy
             </div>
           </div>
           <Layout />
         </div>
       </Provider>
-    );
+    )
   }
 
-  private handleClickBlock = event => {
-    this.setMode("block");
-  };
-
-  private handleClickTask = event => {
-    this.setMode("task");
-  };
+  private handleClickModeOption = mode => {
+    return event => {
+      this.setMode(mode)
+    }
+  }
 
   private handleClickWhitespace = event => {
-    console.log("Clicked whitespace.");
-  };
+    console.log("Clicked whitespace.")
+  }
 
   private handleDragWhitespace = event => {
-    console.log("Dragged whitespace.");
-  };
+    console.log("Dragged whitespace.")
+  }
 
   private setMode = (mode: ModeType) => {
     this.setState({
       mode
-    });
-  };
+    })
+  }
 }
 
-export default App;
+export default App

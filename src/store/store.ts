@@ -1,21 +1,27 @@
-import * as _ from "lodash";
-import { createStore } from "redux";
-import { generateBlock } from "../model";
-import * as database from "../services/database";
-import { IBlock, IColumnLayout, IState } from "../types";
-import * as utils from "../utils";
+import * as _ from "lodash"
+import { createStore } from "redux"
+import { generateBlock } from "../model"
+import * as database from "../services/database"
+import {
+  IColumnLayout,
+  IHandleDropBlockAction,
+  IHandleDropColumnLayoutAction,
+  IState
+} from "../types"
+import * as utils from "../utils"
 
 // Actions
 
-const blocks = database.fetchBlocks(20);
+const blocks = database.fetchBlocks(20)
 
 const initialState: IState = {
   blocks,
   layout: null,
   targetBlock: null,
-  views: null
-};
-console.log(`Initial state: ${JSON.stringify(initialState, null, 2)}`);
+  views: null,
+  mode: null
+}
+console.log(`Initial state: ${JSON.stringify(initialState, null, 2)}`)
 
 // Redux calls this with the state and an action that just happened.
 // Returns the state.
@@ -31,31 +37,33 @@ console.log(`Initial state: ${JSON.stringify(initialState, null, 2)}`);
 const reducer = (state: IState = initialState, action /*: ActionType */) => {
   switch (action.type) {
     case "SET_LAYOUT":
-      return setLayout(state, action);
+      return setLayout(state, action)
+    case "HANDLE_DROP_COLUMN_LAYOUT":
+      return handleDropColumnLayout(state, action)
     case "CREATE_BLOCK":
-      return createBlock(state, action);
-    case "HANDLE_DROP":
-      return handleDrop(state, action);
+      return createBlock(state, action)
+    case "HANDLE_DROP_BLOCK":
+      return handleDropBlock(state, action)
     case "SET_TARGET_BLOCK_VIEW":
-      return setTargetBlockView(state, action);
+      return setTargetBlockView(state, action)
     case "RESET_TARGET_BLOCK_VIEW":
-      return resetTargetBlockView(state, action);
+      return resetTargetBlockView(state, action)
     default:
-      return state;
+      return state
   }
-};
+}
 
 const createBlock = (state: IState, action) => {
-  console.log("Creating block");
-  console.log(`block: ${JSON.stringify(state.blocks, null, 2)}`);
+  console.log("Creating block")
+  console.log(`block: ${JSON.stringify(state.blocks, null, 2)}`)
   return {
     ...state,
     blocks: [...state.blocks, generateBlock()]
-  };
-};
+  }
+}
 
 const setLayout = (state: IState, action) => {
-  console.log("Setting layout.");
+  // console.log("Setting layout.")
   return {
     ...state,
     layout: action.layout,
@@ -63,10 +71,99 @@ const setLayout = (state: IState, action) => {
       ...state.views,
       ...action.layout.views
     }
-  };
-};
+  }
+}
 
-const handleDrop = (state: IState, action) => {
+const handleDropColumnLayout = (
+  state: IState,
+  action: IHandleDropColumnLayoutAction
+) => {
+  // console.log(`Composing block ${JSON.stringify(payload)} in block ${JSON.stringify(this.state.targetBlock)}.`)
+  // console.log(`Removing block ${JSON.stringify(payload)} from group ${}`)
+  const {
+    addedIndex,
+    droppedColumnLayout,
+    element,
+    payload,
+    removedIndex,
+    // targetColumnLayout,
+    layoutValue
+  } = action
+
+  // if (targetColumnLayout) {
+  //   const reorderedColumnLayouts: IColumnLayout[] = layoutValue.columnLayouts.reduce(
+  //     (value, columnLayout) => {
+  //       if (columnLayout.id === droppedColumnLayout.id) {
+  //         const reorderedColumnLayout = utils.applyComposeBlocks(
+  //           columnLayout,
+  //           { removedIndex, addedIndex, payload, element }, // dropResult
+  //           droppedColumnLayout.id,
+  //           // TODO(@mgub): [BUG] targetBlock is a split brain across this file and Layout.tsx. Move to Redux.
+  //           targetColumnLayout,
+  //           // Refactored:
+  //           state,
+  //           action
+  //         )
+  //         if (reorderedColumnLayout.blockViews.length > 0) {
+  //           value.push(reorderedColumnLayout)
+  //         }
+  //         return value
+  //       } else {
+  //         value.push(columnLayout)
+  //         return value
+  //       }
+  //     },
+  //     []
+  //   )
+
+  //   // TOOD: Refactor
+  //   return {
+  //     ...state,
+  //     groups: reorderedColumnLayouts
+  //   }
+  // } else {
+  // TODO: <MOVE_INTO_HANDLE_DROP>
+  console.log(
+    `DROPPED in ${
+      droppedColumnLayout.id
+    }: removedIndex: ${removedIndex}, addedIndex: ${addedIndex}, payload: ${JSON.stringify(
+      payload,
+      null,
+      2
+    )}, element: ${element}}`
+  )
+
+  // const columnLayouts = _.cloneDeep(layoutValue.columnLayouts)
+  // const reorderedColumnLayouts: IColumnLayout[] = columnLayouts.reduce(
+  //   (value, columnLayout) => {
+  // if (columnLayout.id === droppedColumnLayout.id) {
+  const reorderedColumnLayouts = utils.applyDragColumnLayout(
+    layoutValue.columnLayouts,
+    { removedIndex, addedIndex, payload, element } // dropResult
+    // Refactored:
+  )
+  // value.push(reorderedColumnLayout)
+  // return value
+  // } else {
+  //   value.push(columnLayout)
+  //   return value
+  // }
+  //   },
+  //   []
+  // )
+
+  // TOOD: Refactor
+  return {
+    ...state,
+    layout: {
+      ...state.layout,
+      columnLayouts: reorderedColumnLayouts
+    }
+  } as IState
+  // }
+}
+
+const handleDropBlock = (state: IState, action: IHandleDropBlockAction) => {
   // console.log(`Composing block ${JSON.stringify(payload)} in block ${JSON.stringify(this.state.targetBlock)}.`)
   // console.log(`Removing block ${JSON.stringify(payload)} from group ${}`)
   const {
@@ -77,14 +174,14 @@ const handleDrop = (state: IState, action) => {
     removedIndex,
     targetBlock,
     layoutValue
-  } = action;
+  } = action
 
   if (targetBlock) {
     const reorderedColumnLayouts: IColumnLayout[] = layoutValue.columnLayouts.reduce(
-      (value, groupState) => {
-        if (groupState.id === droppedColumnLayout.id) {
-          const reorderedColumnLayout = utils.applyCompose(
-            groupState,
+      (value, columnLayout) => {
+        if (columnLayout.id === droppedColumnLayout.id) {
+          const reorderedColumnLayout = utils.applyComposeBlocks(
+            columnLayout,
             { removedIndex, addedIndex, payload, element }, // dropResult
             droppedColumnLayout.id,
             // TODO(@mgub): [BUG] targetBlock is a split brain across this file and Layout.tsx. Move to Redux.
@@ -92,24 +189,27 @@ const handleDrop = (state: IState, action) => {
             // Refactored:
             state,
             action
-          );
+          )
           if (reorderedColumnLayout.blockViews.length > 0) {
-            value.push(reorderedColumnLayout);
+            value.push(reorderedColumnLayout)
           }
-          return value;
+          return value
         } else {
-          value.push(groupState);
-          return value;
+          value.push(columnLayout)
+          return value
         }
       },
       []
-    );
+    )
 
     // TOOD: Refactor
     return {
       ...state,
-      groups: reorderedColumnLayouts
-    };
+      layout: {
+        ...state.layout,
+        columnLayouts: reorderedColumnLayouts
+      }
+    } as IState
   } else {
     // TODO: <MOVE_INTO_HANDLE_DROP>
     console.log(
@@ -120,70 +220,71 @@ const handleDrop = (state: IState, action) => {
         null,
         2
       )}, element: ${element}}`
-    );
+    )
 
-    const reorderedColumnLayouts: IColumnLayout[] = layoutValue.columnLayouts.reduce(
+    const columnLayouts = _.cloneDeep(layoutValue.columnLayouts)
+    const reorderedColumnLayouts: IColumnLayout[] = columnLayouts.reduce(
       (value, columnLayout) => {
         if (columnLayout.id === droppedColumnLayout.id) {
-          const reorderedColumnLayout = utils.applyDrag(
+          const reorderedColumnLayout = utils.applyDragBlock(
             columnLayout,
-            { removedIndex, addedIndex, payload, element }, // dropResult
-            // Refactored:
-            state,
-            action
-          );
+            { removedIndex, addedIndex, payload, element } // dropResult
+          )
           if (reorderedColumnLayout.blockViews.length > 0) {
-            value.push(reorderedColumnLayout);
+            value.push(reorderedColumnLayout)
           }
-          return value;
+          return value
         } else {
-          value.push(columnLayout);
-          return value;
+          value.push(columnLayout)
+          return value
         }
       },
       []
-    );
+    )
 
     // TOOD: Refactor
     return {
       ...state,
-      groups: reorderedColumnLayouts
-    };
+      layout: {
+        ...state.layout,
+        columnLayouts: reorderedColumnLayouts
+      }
+    } as IState
   }
-};
+}
 
-const applyCompose = (state: IState, action) => {
-  return;
-};
+// const applyCompose = (state: IState, action) => {
+//   return
+// }
 
-const applyDrag = (state: IState, action) => {
-  return;
-};
+// const applyDrag = (state: IState, action) => {
+//   return
+// }
 
 const setTargetBlockView = (state: IState, action) => {
   return {
     ...state,
     targetBlock: action.targetBlock
-  };
-};
+  }
+}
 
 const resetTargetBlockView = (state: IState, action) => {
   return {
     ...state,
     targetBlock: null
-  };
-};
+  }
+}
 
 // Create Redux store.
 // TODO(mgub): Enable Redux store.
-export const store = createStore(reducer);
+export const store = createStore(reducer)
 
 export const getStore = () => {
-  return store;
-};
+  return store
+}
 
 // Initialize.
 store.dispatch({
   type: "SET_LAYOUT",
   layout: database.fetchLayout(10, blocks)
-});
+})

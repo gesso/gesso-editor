@@ -1,13 +1,27 @@
-import * as React from "react";
-import { connect, DispatchProp } from "react-redux";
-import ColumnLayout from "./ColumnLayout";
-import { IBlock, ILayout, IState } from "./types";
+import * as React from "react"
+import { connect, DispatchProp } from "react-redux"
+import { Container } from "react-smooth-dnd"
+import ColumnLayout from "./ColumnLayout"
+import {
+  IColumnLayout,
+  IHandleDropColumnLayoutAction,
+  ILayout,
+  IState
+} from "./types"
 
 const styles = {
   layoutContainer: {
     alignItems: "center",
+    // backgroundColor: "red",
     display: "flex",
     height: "100%",
+    justifyContent: "center",
+    margin: 0
+  },
+  layoutContainer2: {
+    alignItems: "center",
+    // backgroundColor: "red",
+    display: "flex",
     justifyContent: "center",
     margin: 0
   },
@@ -19,53 +33,91 @@ const styles = {
     minHeight: "50px",
     width: "200px"
   }
-};
+}
 
 // Component props.
 export interface IOwnProps {
-  hack?: void;
+  hack?: void
 }
 
 // Props from Redux store.
 interface IStateProps {
-  layout?: ILayout;
+  layoutValue?: ILayout
 }
 
 interface IDispatchProps {
   // onSomeEvent: () => void;
-  hack?: void;
+  hack?: void
 }
 
-type Props = IStateProps & IDispatchProps & IOwnProps & DispatchProp<any>;
+type Props = IStateProps & IDispatchProps & IOwnProps & DispatchProp<any>
 
-interface IStateDELETE {
-  targetBlock: IBlock | null;
-}
-
-class LayoutView extends React.Component<Props, IStateDELETE> {
+class LayoutView extends React.Component<Props, {}> {
   constructor(props: Props) {
-    super(props);
+    super(props)
   }
 
   public render() {
-    console.log(JSON.stringify(this.props.layout, null, 2));
+    // console.log(JSON.stringify(this.props.layoutValue, null, 2))
     return (
       <div style={styles.layoutContainer}>
-        <div style={styles.layout}>Holder</div>
-        {this.props.layout.columnLayouts.map(columnLayout => {
-          return <ColumnLayout key={columnLayout.id} id={columnLayout.id} />;
-        })}
-        <div style={styles.layout}>Holder</div>
+        <Container
+          style={styles.layoutContainer2}
+          groupName="2"
+          orientation="horizontal"
+          getChildPayload={this.handleGetChildPayload(
+            this.props.layoutValue.columnLayouts
+          )}
+          onDragStart={this.handleDragStart}
+          onDrop={this.handleDrop(this.props.layoutValue.columnLayouts)}>
+          {this.props.layoutValue.columnLayouts.map((columnLayout, index) => {
+            return <ColumnLayout key={columnLayout.id} id={columnLayout.id} />
+          })}
+        </Container>
       </div>
-    );
+    )
+  }
+
+  private handleGetChildPayload = (columnLayouts: IColumnLayout[]) => {
+    console.log("handleGetChildPayload")
+    return index => columnLayouts[index]
+  }
+
+  private handleDrop = (droppedColumnLayout: IColumnLayout[]) => {
+    console.log("handleDrop")
+    return dropResult => {
+      const { removedIndex, addedIndex, payload, element } = dropResult
+
+      this.props.dispatch({
+        addedIndex,
+        droppedColumnLayout,
+        element,
+        layoutValue: this.props.layoutValue,
+        payload,
+        removedIndex,
+        // targetBlock: this.props.targetBlock,
+        type: "HANDLE_DROP_COLUMN_LAYOUT"
+        // reorderedColumnLayouts,
+      } as IHandleDropColumnLayoutAction)
+    }
+  }
+
+  private handleDragStart = ({ isSource, payload, willAcceptDrop }) => {
+    console.log(
+      `isSource: ${isSource}, payload: ${JSON.stringify(
+        payload,
+        null,
+        2
+      )}, willAcceptDrop: ${willAcceptDrop}`
+    )
   }
 }
 
 // Map Redux state to component props.
 const mapStateToProps = (state: IState, ownProps: IOwnProps): IStateProps => ({
-  layout: state.layout
-});
+  layoutValue: state.layout
+})
 
 export default connect<IStateProps, IDispatchProps, IOwnProps>(mapStateToProps)(
   LayoutView
-);
+)

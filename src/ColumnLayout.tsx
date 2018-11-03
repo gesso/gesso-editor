@@ -1,11 +1,15 @@
-import * as _ from "lodash";
-import * as React from "react";
-import { connect, DispatchProp } from "react-redux";
-import { Container } from "react-smooth-dnd";
-import BlockView from "./Block";
-import { IBlock, IBlockView, IColumnLayout, ILayout, IState } from "./types";
-import { applyDrag } from "./utils";
-import * as utils from "./utils";
+import * as _ from "lodash"
+import * as React from "react"
+import { connect, DispatchProp } from "react-redux"
+import { Container, Draggable } from "react-smooth-dnd"
+import BlockView from "./Block"
+import {
+  IBlockView,
+  IColumnLayout,
+  IHandleDropBlockAction,
+  ILayout,
+  IState
+} from "./types"
 
 const styles = {
   columnLayoutContainer: {
@@ -26,65 +30,66 @@ const styles = {
     padding: "10px",
     textAlign: "center"
   } as React.CSSProperties
-};
+}
 
 // Component props.
 export interface IOwnProps {
-  key: string;
-  id: string;
+  key: string
+  id: string
 }
 
 // Props from Redux store.
 interface IStateProps {
-  columnLayout?: IColumnLayout;
-  layoutValue: ILayout;
-  targetBlock: IBlockView | null;
+  columnLayout?: IColumnLayout
+  layoutValue: ILayout
+  targetBlock: IBlockView | null
 }
 
 interface IDispatchProps {
   // onSomeEvent: () => void;
-  hack?: void;
+  hack?: void
 }
 
-type Props = IStateProps & IDispatchProps & IOwnProps & DispatchProp<any>;
+type Props = IStateProps & IDispatchProps & IOwnProps & DispatchProp<any>
 
 class ColumnLayout extends React.Component<Props, {}> {
   public render() {
     return (
-      <div style={styles.columnLayoutContainer}>
-        <div>Holder</div>
-        <div style={styles.columnLayout}>{this.props.columnLayout.name}</div>
-        <Container
-          groupName="1"
-          getChildPayload={this.handleGetChildPayload(
-            this.props.columnLayout.blockViews
-          )}
-          onDragStart={this.handleDragStart}
-          onDrop={this.handleDrop(this.props.columnLayout)}>
-          {this.props.columnLayout.blockViews.map(blockView => {
-            return (
-              <BlockView
-                key={blockView.id}
-                view={blockView.id}
-                id={blockView.blockId}
-                onTarget={this.onTarget}
-                onUntarget={this.onUntarget}
-              />
-            );
-          })}
-        </Container>
-        <div>Holder</div>
-      </div>
-    );
+      <Draggable key={this.props.key}>
+        <div style={styles.columnLayoutContainer}>
+          <div style={styles.columnLayout}>{this.props.columnLayout.name}</div>
+          <Container
+            groupName="2"
+            orientation="vertical"
+            getChildPayload={this.handleGetChildPayload(
+              this.props.columnLayout.blockViews
+            )}
+            onDragStart={this.handleDragStart}
+            onDrop={this.handleDrop(this.props.columnLayout)}>
+            {this.props.columnLayout.blockViews.map(blockView => {
+              return (
+                <BlockView
+                  key={blockView.id}
+                  view={blockView.id}
+                  id={blockView.blockId}
+                  onTarget={this.onTargetBlockView}
+                  onUntarget={this.onUntargetBlockView}
+                />
+              )
+            })}
+          </Container>
+        </div>
+      </Draggable>
+    )
   }
 
-  private handleGetChildPayload = (blockView: IBlockView[]) => {
-    return index => blockView[index];
-  };
+  private handleGetChildPayload = (blockViews: IBlockView[]) => {
+    return index => blockViews[index]
+  }
 
-  private handleDrop = droppedColumnLayout => {
+  private handleDrop = (droppedColumnLayout: IColumnLayout) => {
     return dropResult => {
-      const { removedIndex, addedIndex, payload, element } = dropResult;
+      const { removedIndex, addedIndex, payload, element } = dropResult
 
       this.props.dispatch({
         addedIndex,
@@ -94,9 +99,9 @@ class ColumnLayout extends React.Component<Props, {}> {
         payload,
         removedIndex,
         targetBlock: this.props.targetBlock,
-        type: "HANDLE_DROP"
+        type: "HANDLE_DROP_BLOCK"
         // reorderedColumnLayouts,
-      });
+      } as IHandleDropBlockAction)
       // if (this.props.targetBlock) {
       //   // // console.log(`Composing block ${JSON.stringify(payload)} in block ${JSON.stringify(this.state.targetBlock)}.`)
       //   // // console.log(`Removing block ${JSON.stringify(payload)} from group ${}`)
@@ -168,8 +173,8 @@ class ColumnLayout extends React.Component<Props, {}> {
       //     type: "HANDLE_DROP"
       //   });
       // }
-    };
-  };
+    }
+  }
 
   private handleDragStart = ({ isSource, payload, willAcceptDrop }) => {
     console.log(
@@ -178,29 +183,29 @@ class ColumnLayout extends React.Component<Props, {}> {
         null,
         2
       )}, willAcceptDrop: ${willAcceptDrop}`
-    );
-  };
+    )
+  }
 
-  private onTarget = (blockView: IBlockView) => {
-    console.log(`Targeting block view ${blockView.id}.`);
+  private onTargetBlockView = (blockView: IBlockView) => {
+    console.log(`Targeting block view ${blockView.id}.`)
     // this.setState({
     //   targetBlock: blockView
     // });
     this.props.dispatch({
       type: "SET_TARGET_BLOCK_VIEW",
       targetBlock: blockView
-    });
-  };
+    })
+  }
 
-  private onUntarget = (blockView: IBlockView) => {
-    console.log(`Untargeting block view ${blockView.id}.`);
+  private onUntargetBlockView = (blockView: IBlockView) => {
+    console.log(`Untargeting block view ${blockView.id}.`)
     // this.setState({
     //   targetBlock: null
     // });
     this.props.dispatch({
       type: "RESET_TARGET_BLOCK_VIEW"
-    });
-  };
+    })
+  }
 }
 
 // Map Redux state to component props.
@@ -208,10 +213,10 @@ const mapStateToProps = (state: IState, ownProps: IOwnProps): IStateProps => ({
   layoutValue: state.layout,
   targetBlock: state.targetBlock,
   columnLayout: state.layout.columnLayouts.filter(columnLayout => {
-    return columnLayout.id === ownProps.id;
+    return columnLayout.id === ownProps.id
   })[0]
-});
+})
 
 export default connect<IStateProps, IDispatchProps, IOwnProps>(mapStateToProps)(
   ColumnLayout
-);
+)

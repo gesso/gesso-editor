@@ -12,40 +12,48 @@
 // export type IType = IBlockType
 
 export interface IEntity {
-  id: string;
+  id: string
 }
 
 export interface IBlock {
-  id: string;
-  name: string;
-  blocks?: IBlock[];
+  id: string
+  name: string
+  blocks?: IBlock[]
 }
 
 export interface ITask {
-  id: string;
-  name: string;
-  description: string;
-  tasks?: ITask[];
+  id: string
+  name: string
+  description: string
+  tasks?: ITask[]
 }
 
 // TODO: IHorizontalLayout (contains IColumnLayouts)
-export interface ILayout {
-  id: string;
-  columnLayouts: IColumnLayout[];
-  views: IViewStore;
+export type ILayout = IBlockLayout2 | ITaskLayout
+
+export interface IBlockLayout2 {
+  id: string
+  columnLayouts: IColumnLayout[]
+  views: IViewStore
+}
+
+export interface ITaskLayout {
+  id: string
+  columnLayouts: IColumnLayout[]
+  views: IViewStore
 }
 
 // TODO: Refactor this to also be an IBlockType
 export interface IColumnLayout {
-  id: string;
-  name: string; // TODO(@mgub): Make optional.
+  id: string
+  name: string // TODO(@mgub): Make optional.
   // blocks?: IBlock[]
-  blockViews?: IBlockView[];
+  blockViews?: IBlockView[]
 }
 
 export interface IBlockView {
-  id: string;
-  blockId: string;
+  id: string
+  blockId: string
 }
 
 // ----------------------------------------------------------------------------
@@ -55,23 +63,44 @@ export interface IBlockView {
 // ----------------------------------------------------------------------------
 
 export interface IState {
-  blocks: IBlock[];
-  layout: ILayout;
-  targetBlock: IBlockView;
-  views: IViewStore;
+  blocks: IBlock[]
+  layout: ILayout
+  targetBlock: IBlockView
+  views: IViewStore
+  mode: ILayout
 }
 
-export type View = IBlockView;
+export type View = IBlockView
 
 export interface IViewStore {
-  [index: number]: View;
+  [index: number]: View
 } // IEntity;
 
 export interface IHandleDropAction {
-  reorderedBoards: IColumnLayout[];
+  reorderedBoards: IColumnLayout[]
 }
 
-export type ActionType = IHandleDropAction;
+export interface IHandleDropColumnLayoutAction {
+  addedIndex: any
+  droppedColumnLayout: any
+  element: any
+  payload: any
+  removedIndex: any
+  // targetColumnLayout: any
+  layoutValue: any
+}
+
+export interface IHandleDropBlockAction {
+  addedIndex: any
+  droppedColumnLayout: any
+  element: any
+  payload: any
+  removedIndex: any
+  targetBlock: any
+  layoutValue: any
+}
+
+export type ActionType = IHandleDropAction
 
 // ----------------------------------------------------------------------------
 //
@@ -81,50 +110,50 @@ export type ActionType = IHandleDropAction;
 
 interface IStateDraft {
   // Content.
-  blocks: IBlock[];
+  blocks: IBlock[]
 
   // Layout.
-  blockContainers: IBoardLayoutContainer[];
+  blockContainers: IBoardLayoutContainer[]
 }
 
 // ----------------------------------------------------------------------------
 
-type RenderStateOpen = "VIEW_STATE_OPEN";
+type RenderStateOpen = "VIEW_STATE_OPEN"
 
-type RenderStateDetail = "VIEW_STATE_DETAIL";
+type RenderStateDetail = "VIEW_STATE_DETAIL"
 
-const DEFAULT_VIEW_STATE = "VIEW_STATE_OPEN" as RenderStateOpen;
+const DEFAULT_VIEW_STATE = "VIEW_STATE_OPEN" as RenderStateOpen
 
 // Purely a layout component. No style, just function.
 // Horizontal drag and drop. <Container>.
 interface IBoardLayoutContainer {
-  id: string;
-  boardLayout: IBoardLayout[];
+  id: string
+  boardLayout: IBoardLayout[]
 }
 
 // Horizontal drag and drop. <Draggable>.
 interface IBoardLayout {
-  id: string;
+  id: string
   // script: IScript
-  blockLayoutContainer: IBlockLayout[];
-  isOpen: boolean;
+  blockLayoutContainer: IBlockLayout[]
+  isOpen: boolean
 }
 
 // Vertical drag and drop. <Container>.
-type IBlockLayout = IBlockOpenLayout | IBlockClosedLayout;
+type IBlockLayout = IBlockOpenLayout | IBlockClosedLayout
 
 // Vertical drag and drop. <Draggable>.
 interface IBlockOpenLayout {
-  id: string;
-  type: "BLOCK_OPEN_LAYOUT_VIEW";
-  block: IBlock;
+  id: string
+  type: "BLOCK_OPEN_LAYOUT_VIEW"
+  block: IBlock
 }
 
 // Render closed block.
 interface IBlockClosedLayout {
-  id: string;
-  type: "BLOCK_CLOSED_LAYOUT_VIEW";
-  block: IBlock;
+  id: string
+  type: "BLOCK_CLOSED_LAYOUT_VIEW"
+  block: IBlock
 }
 
 // IProcessor // Accepts a script.

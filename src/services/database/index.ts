@@ -1,9 +1,9 @@
-import { generateBlocks, generateLayout } from "../../model";
-import { IBlock, IColumnLayout, ILayout } from "../../types";
+import { generateBlocks, generateLayout } from "../../model"
+import { IBlock, ILayout } from "../../types"
 
 export const fetchBlocks = (count: number): IBlock[] => {
-  return generateBlocks(count);
-};
+  return generateBlocks(count)
+}
 
 export const fetchLayout = (
   maxColumnCount: number,
@@ -13,5 +13,5 @@ export const fetchLayout = (
     minColumnCount: 0,
     maxColumnCount,
     blocks
-  });
-};
+  })
+}
