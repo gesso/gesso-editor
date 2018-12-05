@@ -2,6 +2,15 @@
   "name": "codeboard",
   "version": "0.1.0",
   "private": true,
+  "scripts": {
+    "start": "react-scripts-ts start",
+    "build": "react-scripts-ts build",
+    "test": "react-scripts-ts test --env=jsdom",
+    "cypress:open": "./node_modules/.bin/cypress open",
+    "eject": "react-scripts-ts eject",
+    "styleguide": "styleguidist server",
+    "styleguide:build": "styleguidist build"
+  },
   "dependencies": {
     "@types/lodash": "4.14.116",
     "@types/react-redux": "6.0.9",
@@ -24,18 +33,12 @@
     "slate-schema-violations": "0.1.39",
     "uuid": "3.3.2"
   },
-  "scripts": {
-    "start": "react-scripts-ts start",
-    "build": "react-scripts-ts build",
-    "test": "react-scripts-ts test --env=jsdom",
-    "cypress:open": "./node_modules/.bin/cypress open",
-    "eject": "react-scripts-ts eject"
-  },
   "devDependencies": {
     "@types/jest": "^23.3.2",
     "@types/node": "^10.10.1",
     "@types/react": "16.4.14",
     "@types/react-dom": "^16.0.7",
+    "react-styleguidist": "^8.0.6",
     "typescript": "^3.0.3"
   }
 }

@@ -12,7 +12,7 @@ import * as utils from "../utils"
 
 // Actions
 
-const blocks = database.fetchBlocks(20)
+const blocks = database.fetchBlocks(100)
 
 const initialState: IState = {
   blocks,
@@ -34,7 +34,10 @@ console.log(`Initial state: ${JSON.stringify(initialState, null, 2)}`)
 // - Always return new objects when manipulating state. Never manipulate data
 //   structures directely. In other words, only update the state in a functional
 //   manner.
-const reducer = (state: IState = initialState, action /*: ActionType */) => {
+const reducer = (
+  state: IState = initialState,
+  action /*: ActionType */
+): IState => {
   switch (action.type) {
     case "SET_LAYOUT":
       return setLayout(state, action)

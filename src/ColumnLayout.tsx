@@ -19,16 +19,18 @@ const styles = {
     marginLeft: "20px",
     marginRight: "20px",
     minHeight: "50px",
-    width: "200px"
+    width: "400px" // "200px"
   } as React.CSSProperties,
+
   columnLayout: {
-    backgroundColor: "#D7F2FF",
-    border: "1px solid #ff5733",
-    borderRadius: "5px",
-    color: "#ff5733",
+    backgroundColor: "none",
+    border: "none",
+    borderRadius: "20px",
+    color: "rgb(55, 53, 47)",
     fontWeight: 600,
     padding: "10px",
-    textAlign: "center"
+    textAlign: "center",
+    marginBottom: "16px"
   } as React.CSSProperties
 }
 
@@ -57,7 +59,9 @@ class ColumnLayout extends React.Component<Props, {}> {
     return (
       <Draggable key={this.props.key}>
         <div style={styles.columnLayoutContainer}>
-          <div style={styles.columnLayout}>{this.props.columnLayout.name}</div>
+          <div style={styles.columnLayout}>
+            <span>{this.props.columnLayout.name}</span>{" "}
+          </div>
           <Container
             groupName="2"
             orientation="vertical"

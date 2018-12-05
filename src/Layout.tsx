@@ -16,7 +16,8 @@ const styles = {
     display: "flex",
     height: "100%",
     justifyContent: "center",
-    margin: 0
+    margin: 0,
+    transition: "all .5s linear"
   },
   layoutContainer2: {
     alignItems: "center",

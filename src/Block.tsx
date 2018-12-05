@@ -5,6 +5,14 @@ import { connect, DispatchProp } from "react-redux"
 import { Draggable } from "react-smooth-dnd"
 import { IBlock, IBlockView, IState } from "./types"
 
+export const Ico = ({ name = "code" }) => {
+  if (name === "code") {
+    return <IconCode onSelectOption={null} />
+  } else {
+    return <div /> // Default icon (random option)
+  }
+}
+
 export const IconCheck = (props = {}) => {
   return (
     <div>
@@ -28,12 +36,17 @@ interface IIconCode {
   onSelectOption?: (option: string) => void
 }
 
-const IconCode = (props: IIconCode) => {
+const IconCode = props => {
   const handleOnClick = event => {
     props.onSelectOption("code")
   }
   return (
-    <div onClick={handleOnClick}>
+    <div
+      onClick={handleOnClick}
+      style={{
+        display: "inline-block",
+        clear: "none"
+      }}>
       <Icon style={{ color: "#F4A261" }} icon={code} />
     </div>
   )
@@ -44,29 +57,41 @@ const IconBranch = () => {
     alert("complete this codeblock")
   }
   return (
-    <div onClick={handleOnClick}>
+    <span onClick={handleOnClick}>
       <Icon style={{ color: "#F4A261" }} icon={gitBranch} />
-    </div>
+    </span>
   )
 }
 
 const blockStyle = {
   backgroundColor: "#fff",
   border: "1px solid rgba(0,0,0,.125)",
-  borderRadius: "3px",
+  // borderBottom: "1px solid rgba(0,0,0,.125)",
+  borderRadius: "3px", // "3px",
   display: "block",
   fontFamily:
     "LL Circular Pro Web,system-ui,BlinkMacSystemFont,-apple-system,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif",
-  fontSize: "14px",
-  height: "50px",
-  lineHeight: "50px",
-  marginBottom: "2px",
-  marginTop: "2px",
+  // height: "35px",
+  // lineHeight: "35px",
+  paddingTop: "8px",
+  paddingLeft: "8px",
+  paddingRight: "8px",
+  paddingBottom: "8px",
+  marginTop: "3px",
+  marginBottom: "8px",
   outline: 0,
-  textAlign: "center",
-  width: "200px"
+  textAlign: "left",
+  width: "400px"
   // width: "100%",
 } as React.CSSProperties
+
+const blockNameStyle = {
+  fontFamily:
+    '-apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"',
+  fontSize: "16px",
+  margin: "5px"
+  // "text-transform": "lowercase"
+}
 
 // Component props.
 export interface IOwnProps {
@@ -110,17 +135,32 @@ class Block extends React.Component<Props, IStateDELETE> {
         <div
           style={{
             ...blockStyle,
+            // ...{
+            //   opacity: Math.random()
+            // },
             ...(this.state.isOverlapped ? { backgroundColor: "#f0f0f0" } : {})
           }}
           onMouseEnter={this.handleMouseEnter}
           onMouseLeave={this.handleMouseLeave}
           onDragEnter={this.handleDragEnter}>
-          {this.props.blockValue.blocks &&
-          this.props.blockValue.blocks.length > 0
-            ? `${this.props.blockValue.name} (${
-                this.props.blockValue.blocks.length
-              })`
-            : this.props.blockValue.name}
+          <span
+            style={{
+              ...blockNameStyle
+            }}>
+            {this.props.blockValue.blocks &&
+            this.props.blockValue.blocks.length > 0
+              ? `${this.props.blockValue.name} (${
+                  this.props.blockValue.blocks.length
+                })`
+              : this.props.blockValue.name}
+          </span>
+          <span>
+            {IconCode({
+              onSelectOption: event => {
+                console.log("Clicked on code!!!!!!!!!!!!")
+              }
+            })}
+          </span>
           {/* {IconBranch()}
           {IconCheck()}
           {IconListUnordered()} */}
