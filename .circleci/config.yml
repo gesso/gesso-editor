@@ -1,9 +1,37 @@
-version: 2.1
+# References:
+# - https://circleci.com/docs/2.0/language-javascript/
+# - https://circleci.com/docs/2.0/examples/
+# - https://circleci.com/docs/2.0/deployment-integrations/
+# - https://circleci.com/docs/2.0/deployment-integrations/#npm
+version: 2
+jobs:
+  yarn:
+    working_directory: ~/codeboard
+    docker:
+      - image: circleci/node:10.10.0
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            - v1-dependencies-
 
-orbs:
-  hello: circleci/hello-build@0.0.7
-
+      - run: yarn install
+      - run: yarn test
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+  docker:
+    machine: true
+    steps:
+      - checkout
+      - run: docker build -t lilt .
 workflows:
-  "Hello Workflow":
+  version: 2
+  docker_and_yarn:
     jobs:
-      - hello/hello-build
+      - docker
+      - yarn:
+        requires:
+          - docker
