@@ -27,13 +27,14 @@ export const generateLayout = (input: IGenerateLayoutInput): ILayout => {
   const columnCount =
     input.minColumnCount +
     Math.random() * (input.maxColumnCount - input.minColumnCount)
+  // TODO(@mgub): Add random factor to list length.
   const blocksPerColumnCount = input.blocks.length / columnCount
   const layout: ILayout = {
     id: uuidv4(),
     columnLayouts: [],
     views: {}
   }
-  // TODO(mgub): Generate layout.
+  // TODO(@mgub): Generate layout.
   _.times(columnCount, index => {
     // Create views for blocks.
     const blockViews: IBlockView[] = input.blocks
@@ -60,21 +61,22 @@ export const generateLayout = (input: IGenerateLayoutInput): ILayout => {
     // Add column to layout.
     layout.columnLayouts.push(columnLayout)
   })
-  // console.log(`layout: ${JSON.stringify(layout, null, 2)}`)
   return layout
 }
 
 export const generateBlock = (
   withChildren = true,
-  childProbability = 0
+  childrenWithChildrenProbability = 0
 ): IBlock => {
+  const blockNameWordCount = 2 + Math.random() * 3
   return {
     id: uuidv4(),
-    name: projectNameGenerator({ words: 2, number: false }).dashed,
+    name: projectNameGenerator({ words: blockNameWordCount, number: false })
+      .dashed,
     blocks:
-      withChildren && Math.random() <= childProbability
+      withChildren && Math.random() <= childrenWithChildrenProbability
         ? _.times(Math.random() * 10).map(index => {
-            return generateBlock(true, 0.5 * childProbability)
+            return generateBlock(true, 0.5 * childrenWithChildrenProbability)
           })
         : []
   }
