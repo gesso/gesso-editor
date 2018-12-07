@@ -1,5 +1,5 @@
 {
-  "name": "@codeboard/server",
+  "name": "@gesso/server",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",

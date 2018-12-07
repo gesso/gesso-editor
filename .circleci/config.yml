@@ -6,7 +6,7 @@
 version: 2
 jobs:
   yarn:
-    working_directory: ~/codeboard
+    working_directory: ~/gesso
     docker:
       - image: circleci/node:10.10.0
     steps:
@@ -15,7 +15,6 @@ jobs:
           keys:
             - v1-dependencies-{{ checksum "package.json" }}
             - v1-dependencies-
-
       - run: yarn install
       - run: yarn test
       - save_cache:
