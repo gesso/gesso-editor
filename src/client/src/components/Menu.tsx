@@ -1,9 +1,10 @@
 import * as React from "react"
 import { connect, DispatchProp } from "react-redux"
+import { optionStyle } from "./Menu.style"
 import MenuOption from "./MenuOption"
 
 // Component props.
-export interface IOwnProps {
+export interface IComponentProps {
   hack?: void
 }
 
@@ -16,14 +17,9 @@ interface IDispatchProps {
   hack?: void
 }
 
-type Props = IStateProps & IDispatchProps & IOwnProps & DispatchProp<any>
+type Props = IStateProps & IDispatchProps & IComponentProps & DispatchProp<any>
 
 type ModeType = BlockType | TaskType
-
-const optionStyle = {
-  color: "#a8a8a8",
-  padding: "10px"
-}
 
 type BlockType = "block"
 
@@ -104,11 +100,14 @@ class LayoutView extends React.Component<Props, {}> {
 }
 
 // Map Redux state to component props.
-const mapStateToProps = (state: IState, ownProps: IOwnProps): IStateProps => ({
+const mapStateToProps = (
+  state: IState,
+  componentProps: IComponentProps
+): IStateProps => ({
   // layoutValue: state.layout
   hack: null
 })
 
-export default connect<IStateProps, IDispatchProps, IOwnProps>(mapStateToProps)(
-  LayoutView
-)
+export default connect<IStateProps, IDispatchProps, IComponentProps>(
+  mapStateToProps
+)(LayoutView)

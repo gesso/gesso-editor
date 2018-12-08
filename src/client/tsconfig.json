@@ -16,7 +16,7 @@
     "noImplicitAny": false, // default: true
     "strictNullChecks": false, // default: true
     "suppressImplicitAnyIndexErrors": true,
-    "noUnusedLocals": false, // default: true
+    "noUnusedLocals": false // default: true
     // <REMOVE_WHEN_POSSIBLE>
     // "allowSyntheticDefaultImports": true
     // </REMOVE_WHEN_POSSIBLE>

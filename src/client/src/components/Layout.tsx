@@ -1,43 +1,17 @@
 import * as React from "react"
 import { connect, DispatchProp } from "react-redux"
 import { Container } from "react-smooth-dnd"
-import ColumnLayout from "./ColumnLayout"
 import {
   IColumnLayout,
   IHandleDropColumnLayoutAction,
   ILayout,
   IState
-} from "./types"
-
-const styles = {
-  layoutContainer: {
-    alignItems: "center",
-    // backgroundColor: "red",
-    display: "flex",
-    height: "100%",
-    justifyContent: "center",
-    margin: 0,
-    transition: "all .5s linear"
-  },
-  layoutContainer2: {
-    alignItems: "center",
-    // backgroundColor: "red",
-    display: "flex",
-    justifyContent: "center",
-    margin: 0
-  },
-  layout: {
-    border: "1px solid #e0e0e",
-    borderRadius: "5px",
-    marginLeft: "20px",
-    marginRight: "20px",
-    minHeight: "50px",
-    width: "200px"
-  }
-}
+} from "../types"
+import ColumnLayout from "./ColumnLayout"
+import { styles } from "./Layout.style"
 
 // Component props.
-export interface IOwnProps {
+export interface IComponentProps {
   hack?: void
 }
 
@@ -51,7 +25,7 @@ interface IDispatchProps {
   hack?: void
 }
 
-type Props = IStateProps & IDispatchProps & IOwnProps & DispatchProp<any>
+type Props = IStateProps & IDispatchProps & IComponentProps & DispatchProp<any>
 
 class LayoutView extends React.Component<Props, {}> {
   constructor(props: Props) {
@@ -115,10 +89,13 @@ class LayoutView extends React.Component<Props, {}> {
 }
 
 // Map Redux state to component props.
-const mapStateToProps = (state: IState, ownProps: IOwnProps): IStateProps => ({
+const mapStateToProps = (
+  state: IState,
+  componentProps: IComponentProps
+): IStateProps => ({
   layoutValue: state.layout
 })
 
-export default connect<IStateProps, IDispatchProps, IOwnProps>(mapStateToProps)(
-  LayoutView
-)
+export default connect<IStateProps, IDispatchProps, IComponentProps>(
+  mapStateToProps
+)(LayoutView)

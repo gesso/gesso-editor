@@ -1,7 +1,7 @@
 import * as _ from "lodash"
 import { createStore } from "redux"
 import { generateBlock } from "../model"
-import * as database from "../services/database"
+import * as database from "../services/store"
 import {
   IColumnLayout,
   IHandleDropBlockAction,

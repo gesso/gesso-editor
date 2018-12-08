@@ -1,8 +1,9 @@
 import * as React from "react"
 import { connect, DispatchProp } from "react-redux"
+import { styles } from "./MenuOption.style"
 
 // Component props.
-export interface IOwnProps {
+export interface IComponentProps {
   label: string
   onClick?: (event?: any) => void
 }
@@ -16,12 +17,7 @@ interface IDispatchProps {
   hack?: void
 }
 
-type Props = IStateProps & IDispatchProps & IOwnProps & DispatchProp<any>
-
-const styles = {
-  color: "#a8a8a8",
-  padding: "10px"
-}
+type Props = IStateProps & IDispatchProps & IComponentProps & DispatchProp<any>
 
 interface IState {
   hack?: void
@@ -47,11 +43,14 @@ class MenuOption extends React.Component<Props, {}> {
 }
 
 // Map Redux state to component props.
-const mapStateToProps = (state: IState, ownProps: IOwnProps): IStateProps => ({
+const mapStateToProps = (
+  state: IState,
+  componentProps: IComponentProps
+): IStateProps => ({
   // layoutValue: state.layout
   hack: null
 })
 
-export default connect<IStateProps, IDispatchProps, IOwnProps>(mapStateToProps)(
-  MenuOption
-)
+export default connect<IStateProps, IDispatchProps, IComponentProps>(
+  mapStateToProps
+)(MenuOption)

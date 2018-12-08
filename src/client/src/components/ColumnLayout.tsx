@@ -2,40 +2,18 @@ import * as _ from "lodash"
 import * as React from "react"
 import { connect, DispatchProp } from "react-redux"
 import { Container, Draggable } from "react-smooth-dnd"
-import BlockView from "./Block"
 import {
   IBlockView,
   IColumnLayout,
   IHandleDropBlockAction,
   ILayout,
   IState
-} from "./types"
-
-const styles = {
-  columnLayoutContainer: {
-    // backgroundColor: "teal",
-    border: "1px solid #e0e0e",
-    borderRadius: "5px",
-    marginLeft: "20px",
-    marginRight: "20px",
-    minHeight: "50px",
-    width: "400px" // "200px"
-  } as React.CSSProperties,
-
-  columnLayout: {
-    backgroundColor: "none",
-    border: "none",
-    borderRadius: "20px",
-    color: "rgb(55, 53, 47)",
-    fontWeight: 600,
-    padding: "10px",
-    textAlign: "center",
-    marginBottom: "16px"
-  } as React.CSSProperties
-}
+} from "../types"
+import BlockView from "./Block"
+import { styles } from "./ColumnLayout.style"
 
 // Component props.
-export interface IOwnProps {
+export interface IComponentProps {
   key: string
   id: string
 }
@@ -52,7 +30,7 @@ interface IDispatchProps {
   hack?: void
 }
 
-type Props = IStateProps & IDispatchProps & IOwnProps & DispatchProp<any>
+type Props = IStateProps & IDispatchProps & IComponentProps & DispatchProp<any>
 
 class ColumnLayout extends React.Component<Props, {}> {
   public render() {
@@ -213,14 +191,17 @@ class ColumnLayout extends React.Component<Props, {}> {
 }
 
 // Map Redux state to component props.
-const mapStateToProps = (state: IState, ownProps: IOwnProps): IStateProps => ({
+const mapStateToProps = (
+  state: IState,
+  componentProps: IComponentProps
+): IStateProps => ({
   layoutValue: state.layout,
   targetBlock: state.targetBlock,
   columnLayout: state.layout.columnLayouts.filter(columnLayout => {
-    return columnLayout.id === ownProps.id
+    return columnLayout.id === componentProps.id
   })[0]
 })
 
-export default connect<IStateProps, IDispatchProps, IOwnProps>(mapStateToProps)(
-  ColumnLayout
-)
+export default connect<IStateProps, IDispatchProps, IComponentProps>(
+  mapStateToProps
+)(ColumnLayout)

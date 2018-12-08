@@ -14,7 +14,7 @@
     // <REMOVE_WHEN_POSSIBLE>
     "no-debugger": false,
     "no-console": false,
-    "ordered-imports": true
+    "ordered-imports": false // true
     // "no-duplicate-imports": true
     // "no-inferrable-types": true // Require typings.
     // </REMOVE_WHEN_POSSIBLE>

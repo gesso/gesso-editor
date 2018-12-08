@@ -1,16 +1,24 @@
 import * as React from "react"
 import { Provider } from "react-redux"
-import Layout from "./Layout"
-import Menu from "./Menu"
+import Layout from "./components/Layout"
+import Menu from "./components/Menu"
+import Modal from "./components/Modal"
 import { store } from "./store/store"
 
-class App extends React.Component<{}, {}> {
+const initialState = {
+  mode: "block",
+  isModalVisible: false
+}
+
+type State = Readonly<typeof initialState>
+
+class App extends React.Component<{}, State> {
+  public readonly state: State = initialState
+
   constructor(props) {
     super(props)
-
-    this.state = {
-      mode: "block"
-    }
+    this.openModal = this.openModal.bind(this)
+    this.handleOnClick = this.handleOnClick.bind(this)
   }
 
   public render() {
@@ -28,10 +36,28 @@ class App extends React.Component<{}, {}> {
           onClick={this.handleClickWhitespace}
           onDrag={this.handleDragWhitespace}>
           <Menu />
+          <button onClick={this.openModal}>Open Modal</button>
+          {this.state.isModalVisible ? (
+            <Modal onClose={this.handleOnClick} />
+          ) : null}
           <Layout />
         </div>
       </Provider>
     )
+  }
+
+  private handleOnClick() {
+    // this.hideModal()
+    this.setState({
+      isModalVisible: false
+    })
+    // this.props.onClick()
+  }
+
+  private openModal = event => {
+    this.setState({
+      isModalVisible: true
+    })
   }
 
   private handleClickWhitespace = event => {

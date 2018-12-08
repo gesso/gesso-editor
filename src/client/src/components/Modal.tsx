@@ -1,111 +1,97 @@
-// import * as React from "react"
-// import { Provider } from "react-redux"
+import * as React from "react"
+import { connect, DispatchProp } from "react-redux"
+import { styles } from "./Modal.style"
 
-// const styles = {
-//   modalOverlayDiv: {
-//     position: "fixed",
-//     top: 0,
-//     right: 0,
-//     bottom: 0,
-//     left: 0,
-//     height: "100%",
-//     width: "100%",
-//     zIndex: 1000,
-//     backgroundColor: "rgba(0, 0, 0, .65)"
-//   },
-//   modalContentDiv: {
-//     position: "fixed",
-//     top: 0,
-//     right: 0,
-//     bottom: 0,
-//     left: 0,
-//     zIndex: 10000,
-//     overflow: "auto",
-//     textAlign: "center",
-//     padding: "4px",
-//     cursor: "pointer"
-//   },
-//   // modalContentDiv:after {
-//   //     vertical-align: middle;
-//   //     display: inline-block;
-//   //     height: 100%;
-//   //     margin-left: -.05em;
-//   //     content: '';
-//   // },
-//   modalDialogDiv: {
-//     position: "relative",
-//     outline: 0,
-//     width: "auto",
-//     display: "inline-block",
-//     verticalAlign: "middle",
-//     boxSizing: "border-box",
-//     maxWidth: "auto",
-//     cursor: "default",
-//     borderRadius: "4px"
-//   }
-// }
+// Component props.
+export interface IComponentProps {
+  // label: string
+  // onClick?: (event?: any) => void
+  onClose?: (event?: any) => void
+}
 
-// type BlockType = "block"
+// Props from Redux store.
+interface IStateProps {
+  hack?: void
+  isVisible: boolean
+}
 
-// type TaskType = "task"
+interface IDispatchProps {
+  hack?: void
+}
 
-// type ModeType = BlockType | TaskType
+type Props = IStateProps & IDispatchProps & IComponentProps & DispatchProp<any>
 
-// interface IState {
-//   mode: ModeType
-// }
+const initialState = {
+  isVisible: true
+}
 
-// class App extends React.Component<{}, IState> {
-//   constructor(props) {
-//     super(props)
+type State = Readonly<typeof initialState>
 
-//     this.state = {
-//       mode: "block"
-//     }
-//   }
+class Modal extends React.Component<Props, State> {
+  public readonly state: State = initialState
 
-//   // Reference: https://medium.com/@danparkk/react-modals-scalable-customizable-neat-components-f2088d60f3d3
-//   // public render() {
-//   //   const overlayStyle = this.props.overlayStyle ? this.props.overlayStyle : {}
-//   //   const contentStyle = this.props.contentStyle ? this.props.contentStyle : {}
-//   //   const dialogStyle = this.props.dialogStyle ? this.props.dialogStyle : {}
-//   //   return (
-//   //     <div>
-//   //       <div className="modal-overlay-div" style={overlayStyle} />
-//   //       <div
-//   //         className="modal-content-div"
-//   //         style={contentStyle}
-//   //         onClick={this.onOverlayClick.bind(this)}>
-//   //         <div
-//   //           className="modal-dialog-div"
-//   //           style={dialogStyle}
-//   //           onClick={this.onDialogClick}>
-//   //           {this.props.children}
-//   //         </div>
-//   //       </div>
-//   //     </div>
-//   //   )
-//   // }
+  constructor(props: Props) {
+    super(props)
 
-//   private handleClickModeOption = mode => {
-//     return event => {
-//       this.setMode(mode)
-//     }
-//   }
+    this.handleOnClick = this.handleOnClick.bind(this)
+  }
 
-//   private handleClickWhitespace = event => {
-//     console.log("Clicked whitespace.")
-//   }
+  public render() {
+    // console.log(JSON.stringify(this.props.layoutValue, null, 2))
+    return (
+      // <div style={styles} onClick={this.handleClickModeOption}>
+      //   {this.props.label}
+      // </div>
+      // <div style={styles.overlay} onClick={this.handleOnClick}>
+      //   <div style={styles.content}>foobar</div>
+      // </div>
+      <div> {this.state.isVisible ? this.renderModal(true) : undefined}</div>
+    )
+  }
 
-//   private handleDragWhitespace = event => {
-//     console.log("Dragged whitespace.")
-//   }
+  private handleOnClick(event) {
+    // this.hideModal()
+    // this.setState({
+    //   isVisible: false
+    // })
+    event.stopPropagation()
+    this.props.onClose()
+  }
 
-//   private setMode = (mode: ModeType) => {
-//     this.setState({
-//       mode
-//     })
-//   }
-// }
+  private hideModal() {
+    this.setState({
+      ...this.state,
+      isVisible: false
+    })
+  }
 
-// export default App
+  private renderModal(showModal: boolean) {
+    if (showModal) {
+      return (
+        <div style={styles.overlay} onClick={this.handleOnClick}>
+          <div style={styles.content}>foobar</div>
+        </div>
+      )
+    } else {
+      return null
+    }
+  }
+
+  // private handleClickModeOption(event) {
+  //   this.props.onClick(event)
+  // }
+}
+
+// Map Redux state to component props.
+const mapStateToProps = (
+  state: State,
+  componentProps: IComponentProps
+): IStateProps => ({
+  ...state
+  // layoutValue: state.layout
+  // hack: null
+})
+
+export default connect<IStateProps, IDispatchProps, IComponentProps>(
+  mapStateToProps
+)(Modal)
