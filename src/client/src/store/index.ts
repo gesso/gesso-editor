@@ -344,8 +344,6 @@ const resetTargetBlockView = (state: IState, action) => {
 // ----------------------------------------------------------------------------
 
 const createBlock = (state: IState, action) => {
-  console.log("Creating block")
-  console.log(`block: ${JSON.stringify(state.blocks, null, 2)}`)
   const block = generateBlock()
   return {
     ...state,
@@ -355,34 +353,39 @@ const createBlock = (state: IState, action) => {
 }
 
 const setFocusBlock = (state: IState, action) => {
-  console.log(action)
   const { view } = action
-  view.hasFocus = true
   return {
     ...state,
     views: {
       ...state.views,
-      [action.view.id]: action.view
+      [view.id]: {
+        ...view,
+        hasFocus: true
+      }
     }
   }
 }
 
 const unsetFocusBlock = (state: IState, action) => {
-  action.view.hasFocus = false
   const { view } = action
-  view.hasFocus = false
   return {
     ...state,
     views: {
       ...state.views,
-      [action.view.id]: action.view
+      [view.id]: {
+        ...view,
+        hasFocus: false
+      }
     }
   }
 }
 
 // Create Redux store.
 // TODO(mgub): Enable Redux store.
-export const store = createStore(reducer)
+export const store = createStore(
+  reducer
+  // window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+)
 
 export const getStore = () => {
   return store

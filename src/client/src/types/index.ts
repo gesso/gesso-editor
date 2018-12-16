@@ -98,7 +98,7 @@ export interface IState {
 export type View = IBlockView
 
 export interface IViewStore {
-  [index: number]: View
+  [index: string]: View
 }
 
 export interface IHandleDropAction {

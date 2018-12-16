@@ -34,49 +34,60 @@ class Block extends React.Component<Props, State> {
   }
 
   public render() {
+    return this.renderBlock()
+  }
+
+  private renderBlock() {
+    const blockStyle = {
+      ...styles.container,
+      // ...{
+      //   opacity: Math.random()
+      // },
+      ...(this.props.blockView.hasFocus ? { backgroundColor: "#f0f0f0" } : {})
+    }
     return (
       <Draggable key={this.props.key}>
         <div
-          style={{
-            ...styles.container,
-            // ...{
-            //   opacity: Math.random()
-            // },
-            ...(this.props.blockView.hasFocus
-              ? { backgroundColor: "#f0f0f0" }
-              : {})
-          }}
+          style={blockStyle}
           onMouseEnter={this.handleMouseEnter}
           onMouseLeave={this.handleMouseLeave}
           onDragEnter={this.handleDragEnter}>
-          <span
-            style={{
-              ...styles.name
-            }}>
-            {this.props.blockValue.blocks &&
-            this.props.blockValue.blocks.length > 0
-              ? `${this.props.blockValue.name} (${
-                  this.props.blockValue.blocks.length
-                })`
-              : this.props.blockValue.name}
-          </span>
-          <span
-            style={{
-              marginLeft: "auto"
-            }}>
-            {Ico({
-              name: "code",
-              onSelectOption: event => {
-                console.log("Clicked on code!!!!!!!!!!!!")
-                this.showModal(event)
-              }
-            })}
-          </span>
-          {/* {IconBranch()}
-          {IconCheck()}
-          {IconListUnordered()} */}
+          {this.renderBlockName()}
+          {this.renderActionIcons()}
         </div>
       </Draggable>
+    )
+  }
+
+  private renderBlockName() {
+    return (
+      <span
+        style={{
+          ...styles.name
+        }}>
+        {this.props.blockValue.blocks && this.props.blockValue.blocks.length > 0
+          ? `${this.props.blockValue.name} (${
+              this.props.blockValue.blocks.length
+            })`
+          : this.props.blockValue.name}
+      </span>
+    )
+  }
+
+  private renderActionIcons() {
+    return (
+      <span
+        style={{
+          marginLeft: "auto"
+        }}>
+        {Ico({
+          name: "code",
+          onSelectOption: event => {
+            console.log("Clicked on code!!!!!!!!!!!!")
+            this.showModal(event)
+          }
+        })}
+      </span>
     )
   }
 
