@@ -45,7 +45,8 @@ export const generateLayout = (input: IGenerateLayoutInput): ILayout => {
       .map(block => {
         return {
           blockId: block.id,
-          id: uuidv4()
+          id: uuidv4(),
+          hasFocus: false
         } as IBlockView
       })
     // Save block views.

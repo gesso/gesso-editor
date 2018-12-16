@@ -29,9 +29,9 @@ export interface ITask {
 }
 
 // TODO: IHorizontalLayout (contains IColumnLayouts)
-export type ILayout = IBlockLayout2 | ITaskLayout
+export type ILayout = IBlockLayout | ITaskLayout
 
-export interface IBlockLayout2 {
+export interface IBlockLayout {
   id: string
   columnLayouts: IColumnLayout[]
   views: IViewStore
@@ -54,7 +54,14 @@ export interface IColumnLayout {
 export interface IBlockView {
   id: string
   blockId: string
+  hasFocus: boolean
 }
+
+type BlockType = "block"
+
+type TaskType = "task"
+
+export type ModeType = BlockType | TaskType
 
 // ----------------------------------------------------------------------------
 //
@@ -62,19 +69,37 @@ export interface IBlockView {
 //
 // ----------------------------------------------------------------------------
 
+interface IBlockActions {
+  create: "CREATE_BLOCK"
+}
+
+interface IActions {
+  block: IBlockActions
+}
+
+interface IBlockMap {
+  [id: number]: IBlock
+}
+
 export interface IState {
-  blocks: IBlock[]
+  blocks: IBlockMap
   layout: ILayout
   targetBlock: IBlockView
   views: IViewStore
   mode: ILayout
+  menu: {
+    isVisible: boolean
+  }
+  modal: {
+    isVisible: boolean
+  }
 }
 
 export type View = IBlockView
 
 export interface IViewStore {
   [index: number]: View
-} // IEntity;
+}
 
 export interface IHandleDropAction {
   reorderedBoards: IColumnLayout[]
@@ -108,6 +133,7 @@ export type ActionType = IHandleDropAction
 //
 // ----------------------------------------------------------------------------
 
+/*
 interface IStateDraft {
   // Content.
   blocks: IBlock[]
@@ -155,5 +181,6 @@ interface IBlockClosedLayout {
   type: "BLOCK_CLOSED_LAYOUT_VIEW"
   block: IBlock
 }
+*/
 
 // IProcessor // Accepts a script.

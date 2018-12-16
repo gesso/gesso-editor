@@ -1,32 +1,24 @@
 import * as React from "react"
 import { connect, DispatchProp } from "react-redux"
-import { optionStyle } from "./Menu.style"
+import { menuStyle, optionStyle } from "./Menu.style"
 import MenuOption from "./MenuOption"
+import { ModeType } from "../types"
 
 // Component props.
 export interface IComponentProps {
-  hack?: void
+  onChangeMode?: (mode: ModeType) => void
 }
 
 // Props from Redux store.
-interface IStateProps {
-  hack: void
-}
+interface IStateProps {}
 
-interface IDispatchProps {
-  hack?: void
-}
+interface IDispatchProps {}
 
 type Props = IStateProps & IDispatchProps & IComponentProps & DispatchProp<any>
 
-type ModeType = BlockType | TaskType
-
-type BlockType = "block"
-
-type TaskType = "task"
-
 interface IState {
   mode: ModeType
+  menu
 }
 
 class LayoutView extends React.Component<Props, {}> {
@@ -35,7 +27,6 @@ class LayoutView extends React.Component<Props, {}> {
   }
 
   public render() {
-    // console.log(JSON.stringify(this.props.layoutValue, null, 2))
     return (
       // <div
       //   style={{
@@ -58,15 +49,7 @@ class LayoutView extends React.Component<Props, {}> {
       //   <span>search</span> <span>views</span> <span>timeline</span>{" "}
       //   <span>commit</span> <span>docs</span> <span>timeout/forget</span>
       // </div>
-      <div
-        style={{
-          display: "flex",
-          height: "50px",
-          justifyContent: "center",
-          marginRight: "50px",
-          marginTop: "50px",
-          minHeight: "50px"
-        }}>
+      <div style={menuStyle}>
         <MenuOption label="code" onClick={this.handleClickModeOption("code")} />
         <div style={optionStyle}>&rarr;</div>
         <MenuOption
@@ -88,6 +71,7 @@ class LayoutView extends React.Component<Props, {}> {
 
   private handleClickModeOption = mode => {
     return event => {
+      event.stopPropagation()
       this.setMode(mode)
     }
   }
@@ -96,6 +80,9 @@ class LayoutView extends React.Component<Props, {}> {
     this.setState({
       mode
     })
+    if (this.props.onChangeMode) {
+      this.props.onChangeMode(mode)
+    }
   }
 }
 
@@ -104,8 +91,7 @@ const mapStateToProps = (
   state: IState,
   componentProps: IComponentProps
 ): IStateProps => ({
-  // layoutValue: state.layout
-  hack: null
+  menu: state.menu
 })
 
 export default connect<IStateProps, IDispatchProps, IComponentProps>(

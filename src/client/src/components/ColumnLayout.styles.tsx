@@ -1,14 +1,13 @@
 import * as React from "react"
 
 export const styles = {
-  columnLayoutContainer: {
-    // backgroundColor: "teal",
+  layoutContainer: {
     border: "1px solid #e0e0e",
     borderRadius: "5px",
     marginLeft: "20px",
     marginRight: "20px",
     minHeight: "50px",
-    width: "400px" // "200px"
+    width: "400px"
   } as React.CSSProperties,
 
   columnLayout: {

@@ -1,23 +1,22 @@
 import * as React from "react"
 import { connect, DispatchProp } from "react-redux"
 import { styles } from "./Modal.style"
+import Editor from "./Editor"
 
 // Component props.
 export interface IComponentProps {
-  // label: string
-  // onClick?: (event?: any) => void
+  title: string
+  // content: () => any // React.Component<any, any, any>
+  onOpen?: (event?: any) => void
   onClose?: (event?: any) => void
 }
 
 // Props from Redux store.
 interface IStateProps {
-  hack?: void
   isVisible: boolean
 }
 
-interface IDispatchProps {
-  hack?: void
-}
+interface IDispatchProps {}
 
 type Props = IStateProps & IDispatchProps & IComponentProps & DispatchProp<any>
 
@@ -50,10 +49,6 @@ class Modal extends React.Component<Props, State> {
   }
 
   private handleOnClick(event) {
-    // this.hideModal()
-    // this.setState({
-    //   isVisible: false
-    // })
     event.stopPropagation()
     this.props.onClose()
   }
@@ -69,7 +64,18 @@ class Modal extends React.Component<Props, State> {
     if (showModal) {
       return (
         <div style={styles.overlay} onClick={this.handleOnClick}>
-          <div style={styles.content}>foobar</div>
+          <div style={styles.container}>
+            <div style={styles.content}>
+              <div style={styles.section}>{this.props.title}</div>
+              <div style={styles.section}>
+                optional subtitle descriptive text
+              </div>
+              <div style={styles.section}>
+                <Editor />
+              </div>
+              <div style={styles.section}>insert options here, optionally</div>
+            </div>
+          </div>
         </div>
       )
     } else {

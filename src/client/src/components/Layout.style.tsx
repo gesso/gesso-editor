@@ -6,16 +6,21 @@ export const styles = {
     // backgroundColor: "red",
     display: "flex",
     height: "100%",
+    width: "100%",
     justifyContent: "center",
     margin: 0,
-    transition: "all .5s linear"
+    transition: "all .5s linear",
+    overflowX: "auto",
+    whiteSpace: "nowrap",
+    overflowY: "auto"
   } as React.CSSProperties,
   layoutContainer2: {
     alignItems: "center",
     // backgroundColor: "red",
     display: "flex",
     justifyContent: "center",
-    margin: 0
+    margin: 0,
+    height: "100%"
   } as React.CSSProperties,
   layout: {
     border: "1px solid #e0e0e",

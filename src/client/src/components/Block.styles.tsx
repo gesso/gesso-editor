@@ -1,10 +1,10 @@
 import * as React from "react"
 
-export const blockStyle = {
+export const container = {
   backgroundColor: "#fff",
   border: "1px solid rgba(0,0,0,.125)",
   // borderBottom: "1px solid rgba(0,0,0,.125)",
-  borderRadius: "3px", // "3px",
+  borderRadius: "3px",
   display: "flex",
   fontFamily:
     "LL Circular Pro Web,system-ui,BlinkMacSystemFont,-apple-system,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif",
@@ -22,7 +22,7 @@ export const blockStyle = {
   // width: "100%",
 } as React.CSSProperties
 
-export const blockNameStyle = {
+export const name = {
   fontFamily:
     '-apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"',
   fontSize: "16px",

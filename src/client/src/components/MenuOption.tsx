@@ -9,23 +9,18 @@ export interface IComponentProps {
 }
 
 // Props from Redux store.
-interface IStateProps {
-  hack: void
-}
+interface IStateProps {}
 
-interface IDispatchProps {
-  hack?: void
-}
+interface IDispatchProps {}
 
 type Props = IStateProps & IDispatchProps & IComponentProps & DispatchProp<any>
 
-interface IState {
-  hack?: void
-}
+interface IState {}
 
 class MenuOption extends React.Component<Props, {}> {
   constructor(props: Props) {
     super(props)
+    this.handleClickModeOption = this.handleClickModeOption.bind(this)
   }
 
   public render() {
@@ -38,6 +33,7 @@ class MenuOption extends React.Component<Props, {}> {
   }
 
   private handleClickModeOption(event) {
+    event.stopPropagation()
     this.props.onClick(event)
   }
 }

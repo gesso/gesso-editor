@@ -3,7 +3,7 @@
     "baseUrl": ".",
     "outDir": "build/dist",
     "module": "commonjs", // default: "esnext"
-    "target": "es5",
+    "target": "es6", // default: "es5"
     "lib": ["es5", "es6", "es7", "es2017", "dom"], // default: ["es6", "dom"],
     "sourceMap": true,
     "allowJs": true,

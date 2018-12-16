@@ -50,7 +50,7 @@ export const applyComposeBlocks = (
   // Move the block into the target block's block list.
   if (addedIndex !== null) {
     // result.splice(addedIndex, 0, itemToAdd);
-    const block = state.blocks.filter(block2 => {
+    const block = Object.values(state.blocks).filter(block2 => {
       return block2.id === targetBlockView.blockId
     })[0]
     // TODO:

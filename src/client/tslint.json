@@ -14,9 +14,10 @@
     // <REMOVE_WHEN_POSSIBLE>
     "no-debugger": false,
     "no-console": false,
-    "ordered-imports": false // true
+    "ordered-imports": false, // true
     // "no-duplicate-imports": true
     // "no-inferrable-types": true // Require typings.
     // </REMOVE_WHEN_POSSIBLE>
+    "no-empty-interface": false // Default: true
   }
 }

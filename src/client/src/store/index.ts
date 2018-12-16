@@ -19,7 +19,13 @@ const initialState: IState = {
   layout: null,
   targetBlock: null,
   views: null,
-  mode: null
+  mode: null,
+  menu: {
+    isVisible: true
+  },
+  modal: {
+    isVisible: false
+  }
 }
 console.log(`Initial state: ${JSON.stringify(initialState, null, 2)}`)
 
@@ -45,25 +51,34 @@ const reducer = (
       return handleDropColumnLayout(state, action)
     case "CREATE_BLOCK":
       return createBlock(state, action)
+    case "SET_FOCUS_BLOCK":
+      return setFocusBlock(state, action)
+    case "UNSET_FOCUS_BLOCK":
+      return unsetFocusBlock(state, action)
     case "HANDLE_DROP_BLOCK":
       return handleDropBlock(state, action)
     case "SET_TARGET_BLOCK_VIEW":
       return setTargetBlockView(state, action)
     case "RESET_TARGET_BLOCK_VIEW":
       return resetTargetBlockView(state, action)
+    case "OPEN_MENU":
+      return openMenu(state, action)
+    case "CLOSE_MENU":
+      return closeMenu(state, action)
+    case "OPEN_MODAL":
+      return openModal(state, action)
+    case "CLOSE_MODAL":
+      return closeModal(state, action)
     default:
       return state
   }
 }
 
-const createBlock = (state: IState, action) => {
-  console.log("Creating block")
-  console.log(`block: ${JSON.stringify(state.blocks, null, 2)}`)
-  return {
-    ...state,
-    blocks: [...state.blocks, generateBlock()]
-  }
-}
+// ----------------------------------------------------------------------------
+//
+//  Layout.
+//
+// ----------------------------------------------------------------------------
 
 const setLayout = (state: IState, action) => {
   // console.log("Setting layout.")
@@ -73,6 +88,50 @@ const setLayout = (state: IState, action) => {
     views: {
       ...state.views,
       ...action.layout.views
+    }
+  }
+}
+
+const openMenu = (state: IState, action) => {
+  console.log("OPEN_MENU")
+  return {
+    ...state,
+    menu: {
+      ...state.menu,
+      isVisible: true
+    }
+  }
+}
+
+const closeMenu = (state: IState, action) => {
+  console.log("CLOSE_MENU")
+  return {
+    ...state,
+    menu: {
+      ...state.menu,
+      isVisible: false
+    }
+  }
+}
+
+const openModal = (state: IState, action) => {
+  console.log("OPEN_MODAL")
+  return {
+    ...state,
+    modal: {
+      ...state.modal,
+      isVisible: true
+    }
+  }
+}
+
+const closeModal = (state: IState, action) => {
+  console.log("CLOSE_MODAL")
+  return {
+    ...state,
+    modal: {
+      ...state.modal,
+      isVisible: false
     }
   }
 }
@@ -275,6 +334,49 @@ const resetTargetBlockView = (state: IState, action) => {
   return {
     ...state,
     targetBlock: null
+  }
+}
+
+// ----------------------------------------------------------------------------
+//
+//  Blocks.
+//
+// ----------------------------------------------------------------------------
+
+const createBlock = (state: IState, action) => {
+  console.log("Creating block")
+  console.log(`block: ${JSON.stringify(state.blocks, null, 2)}`)
+  const block = generateBlock()
+  return {
+    ...state,
+    // blocks: [...state.blocks, generateBlock()]
+    blocks: { ...state.blocks, [block.id]: block }
+  }
+}
+
+const setFocusBlock = (state: IState, action) => {
+  console.log(action)
+  const { view } = action
+  view.hasFocus = true
+  return {
+    ...state,
+    views: {
+      ...state.views,
+      [action.view.id]: action.view
+    }
+  }
+}
+
+const unsetFocusBlock = (state: IState, action) => {
+  action.view.hasFocus = false
+  const { view } = action
+  view.hasFocus = false
+  return {
+    ...state,
+    views: {
+      ...state.views,
+      [action.view.id]: action.view
+    }
   }
 }
 

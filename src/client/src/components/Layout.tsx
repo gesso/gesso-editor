@@ -11,19 +11,14 @@ import ColumnLayout from "./ColumnLayout"
 import { styles } from "./Layout.style"
 
 // Component props.
-export interface IComponentProps {
-  hack?: void
-}
+export interface IComponentProps {}
 
 // Props from Redux store.
 interface IStateProps {
   layoutValue?: ILayout
 }
 
-interface IDispatchProps {
-  // onSomeEvent: () => void;
-  hack?: void
-}
+interface IDispatchProps {}
 
 type Props = IStateProps & IDispatchProps & IComponentProps & DispatchProp<any>
 
@@ -35,7 +30,7 @@ class LayoutView extends React.Component<Props, {}> {
   public render() {
     // console.log(JSON.stringify(this.props.layoutValue, null, 2))
     return (
-      <div style={styles.layoutContainer}>
+      <div data-component="layout" style={styles.layoutContainer}>
         <Container
           style={styles.layoutContainer2}
           groupName="2"

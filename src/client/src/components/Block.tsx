@@ -2,8 +2,12 @@ import * as React from "react"
 import { connect, DispatchProp } from "react-redux"
 import { Draggable } from "react-smooth-dnd"
 import { IBlock, IBlockView, IState } from "../types"
-import { blockNameStyle, blockStyle } from "./Block.style"
+import * as styles from "./Block.styles"
 import Ico from "./Ico"
+
+const initialState = {}
+
+type State = Readonly<typeof initialState>
 
 // Component props.
 export interface IComponentProps {
@@ -20,25 +24,13 @@ interface IStateProps {
   blockValue: IBlock
 }
 
-interface IDispatchProps {
-  // onSomeEvent: () => void;
-  hack?: void
-}
+interface IDispatchProps {}
 
 type Props = IStateProps & IDispatchProps & IComponentProps & DispatchProp<any>
 
-// TOOD(@mgub): Delete. Don't use state.
-interface IStateDELETE {
-  isOverlapped: boolean
-}
-
-class Block extends React.Component<Props, IStateDELETE> {
+class Block extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
-
-    this.state = {
-      isOverlapped: false
-    }
   }
 
   public render() {
@@ -46,18 +38,20 @@ class Block extends React.Component<Props, IStateDELETE> {
       <Draggable key={this.props.key}>
         <div
           style={{
-            ...blockStyle,
+            ...styles.container,
             // ...{
             //   opacity: Math.random()
             // },
-            ...(this.state.isOverlapped ? { backgroundColor: "#f0f0f0" } : {})
+            ...(this.props.blockView.hasFocus
+              ? { backgroundColor: "#f0f0f0" }
+              : {})
           }}
           onMouseEnter={this.handleMouseEnter}
           onMouseLeave={this.handleMouseLeave}
           onDragEnter={this.handleDragEnter}>
           <span
             style={{
-              ...blockNameStyle
+              ...styles.name
             }}>
             {this.props.blockValue.blocks &&
             this.props.blockValue.blocks.length > 0
@@ -74,6 +68,7 @@ class Block extends React.Component<Props, IStateDELETE> {
               name: "code",
               onSelectOption: event => {
                 console.log("Clicked on code!!!!!!!!!!!!")
+                this.showModal(event)
               }
             })}
           </span>
@@ -85,10 +80,21 @@ class Block extends React.Component<Props, IStateDELETE> {
     )
   }
 
+  // TODO: Turn this into a Redux action and allow the different modals' states
+  // to be saved, and their initial state to be reset.
+  private showModal = event => {
+    this.props.dispatch({
+      type: "OPEN_MODAL"
+    })
+    this.props.dispatch({
+      type: "CLOSE_MENU"
+    })
+  }
+
   private handleMouseEnter = enter => {
-    // console.log("onMouseEnter");
-    this.setState({
-      isOverlapped: true
+    this.props.dispatch({
+      type: "SET_FOCUS_BLOCK",
+      view: this.props.blockView
     })
 
     this.props.onTarget(this.props.blockView)
@@ -97,9 +103,9 @@ class Block extends React.Component<Props, IStateDELETE> {
   }
 
   private handleMouseLeave = event => {
-    // console.log("onMouseLeave");
-    this.setState({
-      isOverlapped: false
+    this.props.dispatch({
+      type: "UNSET_FOCUS_BLOCK",
+      view: this.props.blockView
     })
 
     this.props.onUntarget(this.props.blockView)
@@ -116,7 +122,7 @@ const mapStateToProps = (
   state: IState,
   componentProps: IComponentProps
 ): IStateProps => ({
-  blockValue: state.blocks.filter(block => {
+  blockValue: Object.values(state.blocks).filter(block => {
     return block.id === componentProps.id
   })[0],
   blockView: state.views[componentProps.view]
