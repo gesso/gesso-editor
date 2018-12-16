@@ -73,7 +73,8 @@ class LayoutContainer extends React.Component<Props, State> {
 
   private handleChangeMode(mode: ModeType) {
     console.log(`Setting workflow mode: ${mode}`)
-    this.setState({
+    this.props.dispatch({
+      type: "SET_MODE",
       mode
     })
   }
@@ -94,11 +95,9 @@ class LayoutContainer extends React.Component<Props, State> {
   private showModal = event => {
     this.props.dispatch({
       type: "OPEN_MODAL"
-      // targetBlock: blockView
     })
     this.props.dispatch({
       type: "CLOSE_MENU"
-      // targetBlock: blockView
     })
   }
 
@@ -111,18 +110,12 @@ class LayoutContainer extends React.Component<Props, State> {
   }
 }
 
-// modal: {
-// isVisible: boolean
-// }
-
-// export default LayoutContainer
-
 // Map Redux state to component props.
 const mapStateToProps = (
   state: IState,
   componentProps: IComponentProps
 ): IStateProps => ({
-  mode: "block", // state.mode,
+  mode: state.mode,
   menu: state.menu,
   modal: state.modal
 })

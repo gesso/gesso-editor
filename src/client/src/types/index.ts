@@ -33,6 +33,7 @@ export type ILayout = IBlockLayout | ITaskLayout
 
 export interface IBlockLayout {
   id: string
+  name: string
   columnLayouts: IColumnLayout[]
   views: IViewStore
 }
@@ -86,7 +87,7 @@ export interface IState {
   layout: ILayout
   targetBlock: IBlockView
   views: IViewStore
-  mode: ILayout
+  mode: ModeType
   menu: {
     isVisible: boolean
   }

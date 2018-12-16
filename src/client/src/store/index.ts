@@ -6,7 +6,8 @@ import {
   IColumnLayout,
   IHandleDropBlockAction,
   IHandleDropColumnLayoutAction,
-  IState
+  IState,
+  ModeType
 } from "../types"
 import * as utils from "../utils"
 
@@ -19,7 +20,7 @@ const initialState: IState = {
   layout: null,
   targetBlock: null,
   views: null,
-  mode: null,
+  mode: "block",
   menu: {
     isVisible: true
   },
@@ -47,6 +48,8 @@ const reducer = (
   switch (action.type) {
     case "SET_LAYOUT":
       return setLayout(state, action)
+    case "SET_MODE":
+      return setMode(state, action)
     case "HANDLE_DROP_COLUMN_LAYOUT":
       return handleDropColumnLayout(state, action)
     case "CREATE_BLOCK":
@@ -80,8 +83,15 @@ const reducer = (
 //
 // ----------------------------------------------------------------------------
 
+const setMode = (state: IState, action) => {
+  const { mode } = action
+  return {
+    ...state,
+    mode
+  }
+}
+
 const setLayout = (state: IState, action) => {
-  // console.log("Setting layout.")
   return {
     ...state,
     layout: action.layout,
