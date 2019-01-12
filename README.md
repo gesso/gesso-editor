@@ -1,6 +1,8 @@
-# Codeboard
+# Gesso
 
 [![DeepScan grade](https://deepscan.io/api/teams/2456/projects/3534/branches/31401/badge/grade.svg)](https://deepscan.io/dashboard#view=project&tid=2456&pid=3534&bid=31401) 
+
+Gesso (formerly Codeboard) represents an investigation of program design and construction as a means of constructive ideation and communication through by means of functional computational systems.
 
 > In addition to having developed language, human beings have also developed means of making, on clay tablets, bits of wood or stone, skins of animals, paper and microchips, more or less permanent marks and scratches that stand for language. These marks enable us to communicate with people who are beyond the reac of our voices, both in space and in time. **– S. I. Hayakawa and Alan R. Hayakawa, Language in Thought and Action (Fifth Edition)**
 
