@@ -2,6 +2,10 @@
 
 [![DeepScan grade](https://deepscan.io/api/teams/2456/projects/3534/branches/31401/badge/grade.svg)](https://deepscan.io/dashboard#view=project&tid=2456&pid=3534&bid=31401) 
 
+> In addition to having developed language, human beings have also developed means of making, on clay tablets, bits of wood or stone, skins of animals, paper and microchips, more or less permanent marks and scratches that stand for language. These marks enable us to communicate with people who are beyond the reac of our voices, both in space and in time. **– S. I. Hayakawa and Alan R. Hayakawa, Language in Thought and Action (Fifth Edition)**
+
+## Highlights
+
 - Introduces system/application designer role on software development teams and emphasizes code re-use. The designer thinks about the operation and design of the system/application. This role assembles systems (or applications) from blocks delivered by programmers. The role can request revisions on blocks (with instructions in a comment), 
 
 - This type of IDE can help non-development teams leverage the automation potential of programming without needing to learn programming language syntax. Instead, systems and applications can be planned in terms of block-level functionality at a natural level of abstraction. The blocks are then added to a backlock of work organized into a kanban style board that programmers can assign and deliver. The system composer sees if there's an update available and can then update the block where it's used in the system or application. In other words, DSLs can be defined and used to specify systems by system designers while they're implemented in parallel by software developers. This tool is designed to facilitate more direct, operational communications between teams working at different levels of abstraction that have the common interest of automation.
