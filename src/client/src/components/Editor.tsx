@@ -1,18 +1,20 @@
-import * as React from "react"
-import { Value } from "slate"
-import { Editor as SlateEditor } from "slate-react"
-import EditCode from "slate-edit-code"
-import { styles } from "./Editor.styles"
+import * as React from "react";
+import { Value } from "slate";
+import { Editor as SlateEditor } from "slate-react";
+import EditCode from "slate-edit-code";
+import { styles } from "./Editor.styles";
 
 // Component props.
-export interface IComponentProps {}
+export interface IComponentProps {
+  style?: React.CSSProperties
+}
 
 // Props from Redux store.
 interface IStateProps {}
 
 interface IDispatchProps {}
 
-type Props = IStateProps & IDispatchProps & IComponentProps // & DispatchProp<any>
+type Props = IStateProps & IDispatchProps & IComponentProps; // & DispatchProp<any>
 
 // <SLATE>
 // Initial editor state value.
@@ -34,7 +36,8 @@ export const initialValue = Value.fromJSON({
                 object: "text",
                 leaves: [
                   {
-                    text: "// A simple FizzBuzz implementation."
+                    text:
+                      "// TODO(@mgub): Add TODO comment scraper to create tasks."
                   }
                 ]
               }
@@ -48,7 +51,8 @@ export const initialValue = Value.fromJSON({
                 object: "text",
                 leaves: [
                   {
-                    text: "for (var i = 1; i <= 100; i++) {"
+                    text:
+                      "export function fn (input: Input) {"
                   }
                 ]
               }
@@ -62,7 +66,7 @@ export const initialValue = Value.fromJSON({
                 object: "text",
                 leaves: [
                   {
-                    text: "  if (i % 15 == 0) {"
+                    text: "  for (var i = 1; i <= 100; i++) {"
                   }
                 ]
               }
@@ -76,7 +80,7 @@ export const initialValue = Value.fromJSON({
                 object: "text",
                 leaves: [
                   {
-                    text: "    console.log('Fizz Buzz');"
+                    text: "    if (i % 15 == 0) {"
                   }
                 ]
               }
@@ -90,7 +94,7 @@ export const initialValue = Value.fromJSON({
                 object: "text",
                 leaves: [
                   {
-                    text: "  } else if (i % 5 == 0) {"
+                    text: "      console.log('Fizz Buzz');"
                   }
                 ]
               }
@@ -104,7 +108,7 @@ export const initialValue = Value.fromJSON({
                 object: "text",
                 leaves: [
                   {
-                    text: "    console.log('Buzz');"
+                    text: "    } else if (i % 5 == 0) {"
                   }
                 ]
               }
@@ -118,7 +122,7 @@ export const initialValue = Value.fromJSON({
                 object: "text",
                 leaves: [
                   {
-                    text: "  } else if (i % 3 == 0) {"
+                    text: "      console.log('Buzz');"
                   }
                 ]
               }
@@ -132,7 +136,7 @@ export const initialValue = Value.fromJSON({
                 object: "text",
                 leaves: [
                   {
-                    text: "    console.log('Fizz');"
+                    text: "    } else if (i % 3 == 0) {"
                   }
                 ]
               }
@@ -146,7 +150,7 @@ export const initialValue = Value.fromJSON({
                 object: "text",
                 leaves: [
                   {
-                    text: "  } else {"
+                    text: "      console.log('Fizz');"
                   }
                 ]
               }
@@ -160,7 +164,35 @@ export const initialValue = Value.fromJSON({
                 object: "text",
                 leaves: [
                   {
-                    text: "    console.log(i);"
+                    text: "    } else {"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            object: "block",
+            type: "code_line",
+            nodes: [
+              {
+                object: "text",
+                leaves: [
+                  {
+                    text: "      console.log(i);"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            object: "block",
+            type: "code_line",
+            nodes: [
+              {
+                object: "text",
+                leaves: [
+                  {
+                    text: "    }"
                   }
                 ]
               }
@@ -188,6 +220,21 @@ export const initialValue = Value.fromJSON({
                 object: "text",
                 leaves: [
                   {
+                    text:
+                      "  return output: Output"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            object: "block",
+            type: "code_line",
+            nodes: [
+              {
+                object: "text",
+                leaves: [
+                  {
                     text: "}"
                   }
                 ]
@@ -198,7 +245,7 @@ export const initialValue = Value.fromJSON({
       }
     ]
   }
-})
+});
 
 // ----------------------------------------------------------------------------
 //
@@ -211,15 +258,15 @@ const editCodeOptions = {
   containerType: "code",
   lineType: "code_line",
   exitBlockType: null
-}
-const plugins = [EditCode(editCodeOptions)]
+};
+const plugins = [EditCode(editCodeOptions)];
 // </SLATE>
 
 class Editor extends React.Component<Props, {}> {
   public state = {
     // Slate.
     value: initialValue
-  }
+  };
 
   public render() {
     return (
@@ -227,7 +274,10 @@ class Editor extends React.Component<Props, {}> {
       //   onEscape={() => {
       //     this.props.onKeyEscape()
       //   }}>
-      <div style={styles.container} onClick={this.handleClick}>
+      <div style={{
+        ...styles.container,
+        ...this.props.style
+      }} onClick={this.handleClick}>
         <SlateEditor
           value={this.state.value}
           onChange={this.handleChange}
@@ -236,23 +286,23 @@ class Editor extends React.Component<Props, {}> {
         />
       </div>
       // </CloseOnEscape>
-    )
+    );
   }
 
   // <SLATE>
   // On change, update the app's React state with the new editor value.
   public handleChange = ({ value }) => {
-    this.setState({ value })
-  }
+    this.setState({ value });
+  };
 
   private handleKeyDown(event) {
-    event.stopPropagation()
+    event.stopPropagation();
   }
   // </SLATE>
 
   private handleClick(event) {
-    event.stopPropagation()
+    event.stopPropagation();
   }
 }
 
-export default Editor
+export default Editor;

@@ -1,3 +1,5 @@
+import * as React from "react"
+
 // ----------------------------------------------------------------------------
 //
 //  DSL.
@@ -24,37 +26,48 @@ export interface IBlock {
 export interface ITask {
   id: string
   name: string
-  description: string
   tasks?: ITask[]
 }
 
 // TODO: IHorizontalLayout (contains IColumnLayouts)
-export type ILayout = IBlockLayout | ITaskLayout
+// export type IBlockLayoutView = IBlockLayoutView | ITaskLayoutView
 
-export interface IBlockLayout {
+export interface IBlockLayoutView {
   id: string
   name: string
-  columnLayouts: IColumnLayout[]
+  columnViews: IBlockLayoutColumnView[]
   views: IViewStore
 }
 
-export interface ITaskLayout {
+export interface ITaskLayoutView {
   id: string
-  columnLayouts: IColumnLayout[]
+  name: string
+  columnViews: ITaskLayoutColumnView[]
   views: IViewStore
 }
 
 // TODO: Refactor this to also be an IBlockType
-export interface IColumnLayout {
+export interface IBlockLayoutColumnView {
   id: string
   name: string // TODO(@mgub): Make optional.
-  // blocks?: IBlock[]
   blockViews?: IBlockView[]
+}
+
+export interface ITaskLayoutColumnView {
+  id: string
+  name: string // TODO(@mgub): Make optional.
+  taskViews?: ITaskView[]
 }
 
 export interface IBlockView {
   id: string
   blockId: string
+  hasFocus: boolean
+}
+
+export interface ITaskView {
+  id: string
+  taskId: string
   hasFocus: boolean
 }
 
@@ -70,6 +83,27 @@ export type ModeType = BlockType | TaskType
 //
 // ----------------------------------------------------------------------------
 
+export interface IState {
+  blocks: IBlockMap
+  tasks: ITaskMap
+  layout: IBlockLayoutView
+  taskLayout: ITaskLayoutView
+  targetBlock: IBlockView
+  pointerReferenceBlock: IBlockView
+  targetTask: ITaskView
+  views: IViewStore
+  mode: ModeType
+  menu: {
+    isVisible: boolean
+  }
+  modal: IModalState
+}
+
+interface IModalState {
+  isVisible: boolean
+  view: React.Component
+}
+
 interface IBlockActions {
   create: "CREATE_BLOCK"
 }
@@ -82,28 +116,18 @@ interface IBlockMap {
   [id: number]: IBlock
 }
 
-export interface IState {
-  blocks: IBlockMap
-  layout: ILayout
-  targetBlock: IBlockView
-  views: IViewStore
-  mode: ModeType
-  menu: {
-    isVisible: boolean
-  }
-  modal: {
-    isVisible: boolean
-  }
+interface ITaskMap {
+  [id: number]: ITask
 }
 
-export type View = IBlockView
+export type View = IBlockView | ITaskView
 
 export interface IViewStore {
   [index: string]: View
 }
 
 export interface IHandleDropAction {
-  reorderedBoards: IColumnLayout[]
+  reorderedBoards: IBlockLayoutColumnView[]
 }
 
 export interface IHandleDropColumnLayoutAction {
@@ -123,6 +147,16 @@ export interface IHandleDropBlockAction {
   payload: any
   removedIndex: any
   targetBlock: any
+  layoutValue: any
+}
+
+export interface IHandleDropTaskAction {
+  addedIndex: any
+  droppedColumnLayout: any
+  element: any
+  payload: any
+  removedIndex: any
+  targetTask: any
   layoutValue: any
 }
 

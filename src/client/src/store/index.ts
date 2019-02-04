@@ -3,29 +3,37 @@ import { createStore } from "redux"
 import { generateBlock } from "../model"
 import * as database from "../services/store"
 import {
-  IColumnLayout,
+  IBlockLayoutColumnView,
   IHandleDropBlockAction,
   IHandleDropColumnLayoutAction,
   IState,
+  IBlock,
+  ITask,
   ModeType
 } from "../types"
 import * as utils from "../utils"
 
 // Actions
 
-const blocks = database.fetchBlocks(100)
+const blocks: IBlock[] = database.fetchBlocks(20)
+const tasks: ITask[] = database.fetchTasks(20)
 
 const initialState: IState = {
   blocks,
+  tasks,
   layout: null,
+  taskLayout: null,
   targetBlock: null,
+  pointerReferenceBlock: null,
+  targetTask: null,
   views: null,
   mode: "block",
   menu: {
     isVisible: true
   },
   modal: {
-    isVisible: false
+    isVisible: false,
+    view: null
   }
 }
 console.log(`Initial state: ${JSON.stringify(initialState, null, 2)}`)
@@ -50,7 +58,7 @@ const reducer = (
       return setLayout(state, action)
     case "SET_MODE":
       return setMode(state, action)
-    case "HANDLE_DROP_COLUMN_LAYOUT":
+    case "HANDLE_DROP_BLOCK_COLUMN_LAYOUT":
       return handleDropColumnLayout(state, action)
     case "CREATE_BLOCK":
       return createBlock(state, action)
@@ -58,12 +66,24 @@ const reducer = (
       return setFocusBlock(state, action)
     case "UNSET_FOCUS_BLOCK":
       return unsetFocusBlock(state, action)
+    case "SET_FOCUS_TASK":
+      return setFocusTask(state, action)
+    case "UNSET_FOCUS_TASK":
+      return unsetFocusTask(state, action)
     case "HANDLE_DROP_BLOCK":
       return handleDropBlock(state, action)
     case "SET_TARGET_BLOCK_VIEW":
       return setTargetBlockView(state, action)
     case "RESET_TARGET_BLOCK_VIEW":
       return resetTargetBlockView(state, action)
+    case "SET_POINTER_REFERENCE_BLOCK_VIEW":
+      return setPointerReferenceBlockView(state, action)
+    case "RESET_POINTER_REFERENCE_BLOCK_VIEW":
+      return resetPointerReferenceBlockView(state, action)
+    case "SET_TARGET_TASK_VIEW":
+      return setTargetTaskView(state, action)
+    case "RESET_TARGET_TASK_VIEW":
+      return resetTargetTaskView(state, action)
     case "OPEN_MENU":
       return openMenu(state, action)
     case "CLOSE_MENU":
@@ -95,9 +115,11 @@ const setLayout = (state: IState, action) => {
   return {
     ...state,
     layout: action.layout,
+    taskLayout: action.taskLayout,
     views: {
       ...state.views,
-      ...action.layout.views
+      ...action.layout.views,
+      ...action.taskLayout.views
     }
   }
 }
@@ -130,7 +152,8 @@ const openModal = (state: IState, action) => {
     ...state,
     modal: {
       ...state.modal,
-      isVisible: true
+      isVisible: true,
+      view: action.view
     }
   }
 }
@@ -195,6 +218,7 @@ const handleDropColumnLayout = (
   //   }
   // } else {
   // TODO: <MOVE_INTO_HANDLE_DROP>
+  /*
   console.log(
     `DROPPED in ${
       droppedColumnLayout.id
@@ -204,13 +228,14 @@ const handleDropColumnLayout = (
       2
     )}, element: ${element}}`
   )
+  */
 
   // const columnLayouts = _.cloneDeep(layoutValue.columnLayouts)
   // const reorderedColumnLayouts: IColumnLayout[] = columnLayouts.reduce(
   //   (value, columnLayout) => {
   // if (columnLayout.id === droppedColumnLayout.id) {
-  const reorderedColumnLayouts = utils.applyDragColumnLayout(
-    layoutValue.columnLayouts,
+  const reorderedColumnViews = utils.applyDragColumnLayout(
+    layoutValue.columnViews,
     { removedIndex, addedIndex, payload, element } // dropResult
     // Refactored:
   )
@@ -229,18 +254,17 @@ const handleDropColumnLayout = (
     ...state,
     layout: {
       ...state.layout,
-      columnLayouts: reorderedColumnLayouts
+      columnViews: reorderedColumnViews
     }
   } as IState
   // }
 }
 
 const handleDropBlock = (state: IState, action: IHandleDropBlockAction) => {
-  // console.log(`Composing block ${JSON.stringify(payload)} in block ${JSON.stringify(this.state.targetBlock)}.`)
-  // console.log(`Removing block ${JSON.stringify(payload)} from group ${}`)
+  console.log("handleDropBlock")
   const {
     addedIndex,
-    droppedColumnLayout,
+    droppedColumnLayout: droppedColumnLayoutView,
     element,
     payload,
     removedIndex,
@@ -249,13 +273,14 @@ const handleDropBlock = (state: IState, action: IHandleDropBlockAction) => {
   } = action
 
   if (targetBlock) {
-    const reorderedColumnLayouts: IColumnLayout[] = layoutValue.columnLayouts.reduce(
+    // Compose the block in another.
+    const reorderedColumnLayouts: IBlockLayoutColumnView[] = layoutValue.columnViews.reduce(
       (value, columnLayout) => {
-        if (columnLayout.id === droppedColumnLayout.id) {
+        if (columnLayout.id === droppedColumnLayoutView.id) {
           const reorderedColumnLayout = utils.applyComposeBlocks(
             columnLayout,
             { removedIndex, addedIndex, payload, element }, // dropResult
-            droppedColumnLayout.id,
+            droppedColumnLayoutView.id,
             // TODO(@mgub): [BUG] targetBlock is a split brain across this file and Layout.tsx. Move to Redux.
             targetBlock,
             // Refactored:
@@ -279,25 +304,27 @@ const handleDropBlock = (state: IState, action: IHandleDropBlockAction) => {
       ...state,
       layout: {
         ...state.layout,
-        columnLayouts: reorderedColumnLayouts
+        columnViews: reorderedColumnLayouts
       }
     } as IState
   } else {
     // TODO: <MOVE_INTO_HANDLE_DROP>
+    /*
     console.log(
       `DROPPED in ${
-        droppedColumnLayout.id
+        droppedColumnLayoutView.id
       }: removedIndex: ${removedIndex}, addedIndex: ${addedIndex}, payload: ${JSON.stringify(
         payload,
         null,
         2
       )}, element: ${element}}`
     )
+    */
 
-    const columnLayouts = _.cloneDeep(layoutValue.columnLayouts)
-    const reorderedColumnLayouts: IColumnLayout[] = columnLayouts.reduce(
+    const columnViews = _.cloneDeep(layoutValue.columnViews)
+    const reorderedColumnLayouts: IBlockLayoutColumnView[] = columnViews.reduce(
       (value, columnLayout) => {
-        if (columnLayout.id === droppedColumnLayout.id) {
+        if (columnLayout.id === droppedColumnLayoutView.id) {
           const reorderedColumnLayout = utils.applyDragBlock(
             columnLayout,
             { removedIndex, addedIndex, payload, element } // dropResult
@@ -319,7 +346,7 @@ const handleDropBlock = (state: IState, action: IHandleDropBlockAction) => {
       ...state,
       layout: {
         ...state.layout,
-        columnLayouts: reorderedColumnLayouts
+        columnViews: reorderedColumnLayouts
       }
     } as IState
   }
@@ -337,6 +364,8 @@ const setTargetBlockView = (state: IState, action) => {
   return {
     ...state,
     targetBlock: action.targetBlock
+    // referenceBlock: action.
+    // source: "POINTER_CLICK" // "POINTER_HOVER", "POINTER_DOUBLE_CLICK", "EYE_TRACKER"
   }
 }
 
@@ -344,6 +373,81 @@ const resetTargetBlockView = (state: IState, action) => {
   return {
     ...state,
     targetBlock: null
+  }
+}
+
+const setPointerReferenceBlockView = (state: IState, action) => {
+  console.log("setPointerReferenceBlockView: " + action.referenceBlock)
+  return {
+    ...state,
+    pointerReferenceBlock: action.referenceBlock
+    // referenceBlock: action.
+    // source: "POINTER_CLICK" // "POINTER_HOVER", "POINTER_DOUBLE_CLICK", "EYE_TRACKER"
+  }
+}
+
+const resetPointerReferenceBlockView = (state: IState, action) => {
+  return {
+    ...state,
+    pointerReferenceBlock: null
+  }
+}
+
+// const setPointerReferenceBlockView = (state: IState, action) => {
+//   const { view } = action
+//   return {
+//     ...state,
+//     views: {
+//       ...state.views,
+//       [view.id]: {
+//         ...view,
+//         isPrimaryPointerReference: true
+//       }
+//     }
+//   }
+// }
+
+// const resetPointerReferenceBlockView = (state: IState, action) => {
+//   const { view } = action
+//   return {
+//     ...state,
+//     views: {
+//       ...state.views,
+//       [view.id]: {
+//         ...view,
+//         isPrimaryPointerReference: false
+//       }
+//     }
+//   }
+// }
+
+const setGazeReferenceBlockView = (state: IState, action) => {
+  return {
+    ...state,
+    gazeReferenceBlock: action.referenceBlock
+    // referenceBlock: action.
+    // source: "POINTER_CLICK" // "POINTER_HOVER", "POINTER_DOUBLE_CLICK", "EYE_TRACKER"
+  }
+}
+
+const resetGazeReferenceBlockView = (state: IState, action) => {
+  return {
+    ...state,
+    gazeReferenceBlock: null
+  }
+}
+
+const setTargetTaskView = (state: IState, action) => {
+  return {
+    ...state,
+    targetTask: action.targetTask
+  }
+}
+
+const resetTargetTaskView = (state: IState, action) => {
+  return {
+    ...state,
+    targetTask: null
   }
 }
 
@@ -390,6 +494,34 @@ const unsetFocusBlock = (state: IState, action) => {
   }
 }
 
+const setFocusTask = (state: IState, action) => {
+  const { view } = action
+  return {
+    ...state,
+    views: {
+      ...state.views,
+      [view.id]: {
+        ...view,
+        hasFocus: true
+      }
+    }
+  }
+}
+
+const unsetFocusTask = (state: IState, action) => {
+  const { view } = action
+  return {
+    ...state,
+    views: {
+      ...state.views,
+      [view.id]: {
+        ...view,
+        hasFocus: false
+      }
+    }
+  }
+}
+
 // Create Redux store.
 // TODO(mgub): Enable Redux store.
 export const store = createStore(
@@ -402,7 +534,10 @@ export const getStore = () => {
 }
 
 // Initialize.
+// export const initializeLayout = () => {
 store.dispatch({
   type: "SET_LAYOUT",
-  layout: database.fetchLayout(10, blocks)
+  layout: database.fetchBlockViewLayout(10, blocks),
+  taskLayout: database.fetchTaskViewLayout(4, 4, tasks)
 })
+// }

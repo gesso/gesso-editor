@@ -1,0 +1,21 @@
+{
+  "mode": "block",
+  "store": {
+    "host": "https://127.0.0.1",
+    "port": 3306,
+    "username": "root",
+    "password": "root"
+  },
+  "cache": {
+    "host": "https://127.0.0.1",
+    "port": 3306,
+    "username": "root",
+    "password": "root"
+  },
+  "queue": {
+    "host": "https://127.0.0.1",
+    "port": 3306,
+    "username": "root",
+    "password": "root"
+  }
+}

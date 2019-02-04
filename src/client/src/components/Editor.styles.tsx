@@ -9,6 +9,8 @@ export const styles = {
     borderRadius: "6px",
     height: "1000px",
     padding: "20px",
-    overflowY: "auto"
+    overflowY: "auto",
+    hieght: "100%",
+    width: "100%"
   } as React.CSSProperties
 }

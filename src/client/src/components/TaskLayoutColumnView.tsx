@@ -3,14 +3,14 @@ import * as React from "react"
 import { connect, DispatchProp } from "react-redux"
 import { Container, Draggable } from "react-smooth-dnd"
 import {
-  IBlockView,
-  IColumnLayout,
-  IHandleDropBlockAction,
-  ILayout,
+  ITaskView,
+  ITaskLayoutColumnView,
+  IHandleDropTaskAction,
+  ITaskLayoutView,
   IState
 } from "../types"
-import BlockView from "./Block"
-import { styles } from "./ColumnLayout.styles"
+import TaskView from "./TaskView"
+import { styles } from "./TaskLayoutColumnView.styles"
 
 // Component props.
 export interface IComponentProps {
@@ -20,16 +20,16 @@ export interface IComponentProps {
 
 // Props from Redux store.
 interface IStateProps {
-  columnLayout?: IColumnLayout
-  layoutValue: ILayout
-  targetBlock: IBlockView | null
+  columnLayout?: ITaskLayoutColumnView
+  layoutValue: ITaskLayoutView
+  targetTask: ITaskView | null
 }
 
 interface IDispatchProps {}
 
 type Props = IStateProps & IDispatchProps & IComponentProps & DispatchProp<any>
 
-class ColumnLayout extends React.Component<Props, {}> {
+class TaskLayoutColumnView extends React.Component<Props, {}> {
   public render() {
     return (
       <Draggable key={this.props.key}>
@@ -41,18 +41,18 @@ class ColumnLayout extends React.Component<Props, {}> {
             groupName="2"
             orientation="vertical"
             getChildPayload={this.handleGetChildPayload(
-              this.props.columnLayout.blockViews
+              this.props.columnLayout.taskViews
             )}
             onDragStart={this.handleDragStart}
             onDrop={this.handleDrop(this.props.columnLayout)}>
-            {this.props.columnLayout.blockViews.map(blockView => {
+            {this.props.columnLayout.taskViews.map(taskView => {
               return (
-                <BlockView
-                  key={blockView.id}
-                  view={blockView.id}
-                  id={blockView.blockId}
-                  onTarget={this.onTargetBlockView}
-                  onUntarget={this.onUntargetBlockView}
+                <TaskView
+                  key={taskView.id}
+                  view={taskView.id}
+                  id={taskView.taskId}
+                  onTarget={this.onTargetTaskView}
+                  onUntarget={this.onUntargetTaskView}
                 />
               )
             })}
@@ -62,11 +62,11 @@ class ColumnLayout extends React.Component<Props, {}> {
     )
   }
 
-  private handleGetChildPayload = (blockViews: IBlockView[]) => {
-    return index => blockViews[index]
+  private handleGetChildPayload = (taskViews: ITaskView[]) => {
+    return index => taskViews[index]
   }
 
-  private handleDrop = (droppedColumnLayout: IColumnLayout) => {
+  private handleDrop = (droppedColumnLayout: ITaskLayoutColumnView) => {
     return dropResult => {
       const { removedIndex, addedIndex, payload, element } = dropResult
       this.props.dispatch({
@@ -76,13 +76,15 @@ class ColumnLayout extends React.Component<Props, {}> {
         layoutValue: this.props.layoutValue,
         payload,
         removedIndex,
-        targetBlock: this.props.targetBlock,
-        type: "HANDLE_DROP_BLOCK"
-      } as IHandleDropBlockAction)
+        targetTask: this.props.targetTask,
+        type: "HANDLE_DROP_TASK"
+      } as IHandleDropTaskAction)
     }
   }
 
   private handleDragStart = ({ isSource, payload, willAcceptDrop }) => {
+    console.log("handleDragStart");
+    /*
     console.log(
       `isSource: ${isSource}, payload: ${JSON.stringify(
         payload,
@@ -90,18 +92,19 @@ class ColumnLayout extends React.Component<Props, {}> {
         2
       )}, willAcceptDrop: ${willAcceptDrop}`
     )
+    */
   }
 
-  private onTargetBlockView = (blockView: IBlockView) => {
+  private onTargetTaskView = (taskView: ITaskView) => {
     this.props.dispatch({
-      type: "SET_TARGET_BLOCK_VIEW",
-      targetBlock: blockView
+      type: "SET_TARGET_TASK_VIEW",
+      targetTask: taskView
     })
   }
 
-  private onUntargetBlockView = (blockView: IBlockView) => {
+  private onUntargetTaskView = (taskView: ITaskView) => {
     this.props.dispatch({
-      type: "RESET_TARGET_BLOCK_VIEW"
+      type: "RESET_TARGET_TASK_VIEW"
     })
   }
 }
@@ -111,13 +114,13 @@ const mapStateToProps = (
   state: IState,
   componentProps: IComponentProps
 ): IStateProps => ({
-  layoutValue: state.layout,
-  targetBlock: state.targetBlock,
-  columnLayout: state.layout.columnLayouts.filter(columnLayout => {
+  layoutValue: state.taskLayout,
+  targetTask: state.targetTask,
+  columnLayout: state.taskLayout.columnViews.filter(columnLayout => {
     return columnLayout.id === componentProps.id
   })[0]
 })
 
 export default connect<IStateProps, IDispatchProps, IComponentProps>(
   mapStateToProps
-)(ColumnLayout)
+)(TaskLayoutColumnView)

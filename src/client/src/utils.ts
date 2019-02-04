@@ -1,7 +1,7 @@
 import {
   IBlock,
   IBlockView,
-  IColumnLayout,
+  IBlockLayoutColumnView,
   IHandleDropBlockAction,
   IHandleDropColumnLayoutAction,
   IState
@@ -13,17 +13,17 @@ interface IApplyDrag {
 
 // TODO: Replace with Redux action.
 export const applyComposeBlocks = (
-  columnLayout: IColumnLayout,
+  columnLayoutView: IBlockLayoutColumnView,
   dragResult: any,
   droppedColumnLayoutId: string,
   targetBlockView: IBlockView,
   state: IState,
   action
-): IColumnLayout => {
+): IBlockLayoutColumnView => {
   console.log("applyCompose")
   const { removedIndex, addedIndex, payload } = dragResult
   if (removedIndex === null && addedIndex === null) {
-    return columnLayout
+    return columnLayoutView
   }
 
   console.log(
@@ -38,7 +38,7 @@ export const applyComposeBlocks = (
     )} from group ${removedIndex}: ${droppedColumnLayoutId}`
   )
 
-  const result = [...columnLayout.blockViews]
+  const result = [...columnLayoutView.blockViews]
   let movedBlockView: IBlockView = payload
 
   // Remove the block from the source block list.
@@ -47,7 +47,7 @@ export const applyComposeBlocks = (
     console.log(`Removed index ${removedIndex}`)
   }
 
-  // Move the block into the target block's block list.
+  // Insert the block into the target block's block list.
   if (addedIndex !== null) {
     // result.splice(addedIndex, 0, itemToAdd);
     const block = Object.values(state.blocks).filter(block2 => {
@@ -63,16 +63,16 @@ export const applyComposeBlocks = (
     console.log(`Added index ${addedIndex}`)
   }
 
-  columnLayout.blockViews = result
+  columnLayoutView.blockViews = result // columnLayoutView.blockViews
 
-  return columnLayout
+  return columnLayoutView
 }
 
 // TODO: Replace with Redux action.
 export const applyDragBlock = (
-  columnLayout: IColumnLayout,
+  columnLayout: IBlockLayoutColumnView,
   dragResult: any
-): IColumnLayout => {
+): IBlockLayoutColumnView => {
   const { removedIndex, addedIndex, payload } = dragResult
   if (removedIndex === null && addedIndex === null) {
     return columnLayout
@@ -95,9 +95,9 @@ export const applyDragBlock = (
 }
 
 export const applyDragColumnLayout = (
-  columnLayouts: IColumnLayout[],
+  columnLayouts: IBlockLayoutColumnView[],
   dragResult: any
-): IColumnLayout[] => {
+): IBlockLayoutColumnView[] => {
   const { removedIndex, addedIndex, payload } = dragResult
   if (removedIndex === null && addedIndex === null) {
     return columnLayouts

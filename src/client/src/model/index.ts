@@ -1,7 +1,16 @@
 import * as _ from "lodash"
 import projectNameGenerator = require("project-name-generator")
 import * as uuidv4 from "uuid/v4"
-import { IBlock, IBlockView, IColumnLayout, ILayout } from "../types"
+import {
+  IBlock,
+  IBlockView,
+  IBlockLayoutColumnView,
+  IBlockLayoutView,
+  ITaskLayoutView,
+  ITask,
+  ITaskView,
+  ITaskLayoutColumnView
+} from "../types"
 
 // ----------------------------------------------------------------------------
 //
@@ -9,35 +18,46 @@ import { IBlock, IBlockView, IColumnLayout, ILayout } from "../types"
 //
 // ----------------------------------------------------------------------------
 
-export const generateBlocks = (blockCount: number): IBlock[] => {
-  const blockList: IBlock[] = []
-  for (let i = 0; i < blockCount; i++) {
-    blockList.push(generateBlock(true, 0.9))
+export const generateBlocks = (count: number): IBlock[] => {
+  const blocks: IBlock[] = []
+  for (let i = 0; i < count; i++) {
+    blocks.push(generateBlock(true, 0.9))
   }
-  return blockList
+  return blocks
 }
 
-interface IGenerateLayoutInput {
+export const generateTasks = (count: number): ITask[] => {
+  const tasks: ITask[] = []
+  for (let i = 0; i < count; i++) {
+    tasks.push(generateTask(true, 0.9))
+  }
+  return tasks
+}
+
+interface IGenerateBlockLayoutInput {
   minColumnCount: number
   maxColumnCount: number
-  blocks: IBlock[]
+  tasks: IBlock[]
 }
 
-export const generateLayout = (input: IGenerateLayoutInput): ILayout => {
+export const generateBlockViewLayout = (
+  input: IGenerateBlockLayoutInput
+): IBlockLayoutView => {
   const columnCount =
     input.minColumnCount +
     Math.random() * (input.maxColumnCount - input.minColumnCount)
   // TODO(@mgub): Add random factor to list length.
-  const blocksPerColumnCount = input.blocks.length / columnCount
-  const layout: ILayout = {
+  const blocksPerColumnCount = input.tasks.length / columnCount
+  const layout: IBlockLayoutView = {
     id: uuidv4(),
-    columnLayouts: [],
+    name: projectNameGenerator({ words: 2, number: false }).dashed,
+    columnViews: [],
     views: {}
   }
   // TODO(@mgub): Generate layout.
   _.times(columnCount, index => {
     // Create views for blocks.
-    const blockViews: IBlockView[] = input.blocks
+    const blockViews: IBlockView[] = input.tasks
       .slice(
         index * blocksPerColumnCount,
         index * blocksPerColumnCount + blocksPerColumnCount
@@ -54,14 +74,67 @@ export const generateLayout = (input: IGenerateLayoutInput): ILayout => {
       layout.views[blockView.id] = blockView
     })
     // Create column layout.
-    const columnLayout: IColumnLayout = {
+    const columnLayout: IBlockLayoutColumnView = {
       blockViews,
       id: uuidv4(),
       name: projectNameGenerator({ words: 2, number: false }).dashed
     }
     // Add column to layout.
-    layout.columnLayouts.push(columnLayout)
+    layout.columnViews.push(columnLayout)
   })
+  return layout
+}
+
+interface IGenerateTaskLayoutInput {
+  minColumnCount: number
+  maxColumnCount: number
+  tasks: ITask[]
+}
+
+export const generateTaskViewLayout = (
+  input: IGenerateTaskLayoutInput
+): ITaskLayoutView => {
+  const columnCount =
+    input.minColumnCount +
+    Math.random() * (input.maxColumnCount - input.minColumnCount)
+  // TODO(@mgub): Add random factor to list length.
+  const tasksPerColumnCount = input.tasks.length / columnCount
+  const layout: ITaskLayoutView = {
+    id: uuidv4(),
+    name: projectNameGenerator({ words: 2, number: false }).dashed,
+    columnViews: [],
+    views: {}
+  }
+  // TODO(@mgub): Generate layout.
+  _.times(columnCount, index => {
+    // Create views for tasks.
+    const taskViews: ITaskView[] = input.tasks
+      .slice(
+        index * tasksPerColumnCount,
+        index * tasksPerColumnCount + tasksPerColumnCount
+      )
+      .map(task => {
+        return {
+          taskId: task.id,
+          id: uuidv4(),
+          hasFocus: false
+        } as ITaskView
+      })
+    // Save task views.
+    _.each(taskViews, taskView => {
+      layout.views[taskView.id] = taskView
+    })
+    // Create column layout.
+    const columnLayout: ITaskLayoutColumnView = {
+      taskViews,
+      id: uuidv4(),
+      name: projectNameGenerator({ words: 2, number: false }).dashed
+    }
+    // Add column to layout.
+    layout.columnViews.push(columnLayout)
+  })
+  console.log("Task Layout: ")
+  console.log(JSON.stringify(layout, null, 2))
   return layout
 }
 
@@ -78,6 +151,24 @@ export const generateBlock = (
       withChildren && Math.random() <= childrenWithChildrenProbability
         ? _.times(Math.random() * 10).map(index => {
             return generateBlock(true, 0.5 * childrenWithChildrenProbability)
+          })
+        : []
+  }
+}
+
+export const generateTask = (
+  withChildren = true,
+  childrenWithChildrenProbability = 0
+): ITask => {
+  const taskNameWordCount = 2 + Math.random() * 3
+  return {
+    id: uuidv4(),
+    name: projectNameGenerator({ words: taskNameWordCount, number: false })
+      .dashed,
+    tasks:
+      withChildren && Math.random() <= childrenWithChildrenProbability
+        ? _.times(Math.random() * 10).map(index => {
+            return generateTask(true, 0.5 * childrenWithChildrenProbability)
           })
         : []
   }

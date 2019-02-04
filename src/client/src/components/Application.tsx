@@ -1,5 +1,5 @@
 import * as React from "react"
-import LayoutContainer from "./LayoutContainer"
+import LayoutView from "./LayoutView"
 
 const initialState = {}
 
@@ -23,7 +23,7 @@ class Application extends React.Component<Props, State> {
   }
 
   public render() {
-    return <LayoutContainer />
+    return <LayoutView />
   }
 }
 

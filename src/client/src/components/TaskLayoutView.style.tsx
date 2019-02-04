@@ -1,7 +1,7 @@
 import * as React from "react"
 
 export const styles = {
-  layoutContainer: {
+  container: {
     alignItems: "center",
     // backgroundColor: "red",
     display: "flex",

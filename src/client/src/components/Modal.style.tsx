@@ -37,13 +37,13 @@ export const styles = {
 
   content: {
     backgroundColor: "none",
-    margin: "20px",
+    margin: 0, // "20px",
     border: "none"
     // width: "100
   } as React.CSSProperties,
 
   section: {
     // padding: "20px"
-    padding: "20px 0px 20px 0px"
+    padding: 0, // "20px 0px 20px 0px"
   } as React.CSSProperties
 }

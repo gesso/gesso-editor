@@ -2,27 +2,27 @@ import * as React from "react"
 import { connect, DispatchProp } from "react-redux"
 import { Container } from "react-smooth-dnd"
 import {
-  IColumnLayout,
+  ITaskLayoutColumnView,
   IHandleDropColumnLayoutAction,
-  ILayout,
+  ITaskLayoutView,
   IState
 } from "../types"
-import ColumnLayout from "./ColumnLayout"
-import { styles } from "./Layout.style"
+import TaskLayoutColumnView from "./TaskLayoutColumnView"
+import { styles } from "./TaskLayoutView.style"
 
 // Component props.
 export interface IComponentProps {}
 
 // Props from Redux store.
 interface IStateProps {
-  layoutValue?: ILayout
+  taskLayoutView?: ITaskLayoutView
 }
 
 interface IDispatchProps {}
 
 type Props = IStateProps & IDispatchProps & IComponentProps & DispatchProp<any>
 
-class LayoutView extends React.Component<Props, {}> {
+class TaskLayoutView extends React.Component<Props, {}> {
   constructor(props: Props) {
     super(props)
   }
@@ -30,30 +30,32 @@ class LayoutView extends React.Component<Props, {}> {
   public render() {
     // console.log(JSON.stringify(this.props.layoutValue, null, 2))
     return (
-      <div data-component="layout" style={styles.layoutContainer}>
+      <div data-component="layout" style={styles.container}>
         <Container
           style={styles.layoutContainer2}
           groupName="2"
           orientation="horizontal"
           getChildPayload={this.handleGetChildPayload(
-            this.props.layoutValue.columnLayouts
+            this.props.taskLayoutView.columnViews
           )}
           onDragStart={this.handleDragStart}
-          onDrop={this.handleDrop(this.props.layoutValue.columnLayouts)}>
-          {this.props.layoutValue.columnLayouts.map((columnLayout, index) => {
-            return <ColumnLayout key={columnLayout.id} id={columnLayout.id} />
+          onDrop={this.handleDrop(this.props.taskLayoutView.columnViews)}>
+          {this.props.taskLayoutView.columnViews.map((columnView, index) => {
+            return (
+              <TaskLayoutColumnView key={columnView.id} id={columnView.id} />
+            )
           })}
         </Container>
       </div>
     )
   }
 
-  private handleGetChildPayload = (columnLayouts: IColumnLayout[]) => {
+  private handleGetChildPayload = (columnLayouts: ITaskLayoutColumnView[]) => {
     console.log("handleGetChildPayload")
     return index => columnLayouts[index]
   }
 
-  private handleDrop = (droppedColumnLayout: IColumnLayout[]) => {
+  private handleDrop = (droppedColumnLayout: ITaskLayoutColumnView[]) => {
     console.log("handleDrop")
     return dropResult => {
       const { removedIndex, addedIndex, payload, element } = dropResult
@@ -62,17 +64,19 @@ class LayoutView extends React.Component<Props, {}> {
         addedIndex,
         droppedColumnLayout,
         element,
-        layoutValue: this.props.layoutValue,
+        layoutValue: this.props.taskLayoutView,
         payload,
         removedIndex,
         // targetBlock: this.props.targetBlock,
-        type: "HANDLE_DROP_COLUMN_LAYOUT"
+        type: "HANDLE_DROP_TASK_COLUMN_LAYOUT"
         // reorderedColumnLayouts,
       } as IHandleDropColumnLayoutAction)
     }
   }
 
   private handleDragStart = ({ isSource, payload, willAcceptDrop }) => {
+    console.log("handleDragStart");
+    /*
     console.log(
       `isSource: ${isSource}, payload: ${JSON.stringify(
         payload,
@@ -80,6 +84,7 @@ class LayoutView extends React.Component<Props, {}> {
         2
       )}, willAcceptDrop: ${willAcceptDrop}`
     )
+    */
   }
 }
 
@@ -88,9 +93,9 @@ const mapStateToProps = (
   state: IState,
   componentProps: IComponentProps
 ): IStateProps => ({
-  layoutValue: state.layout
+  taskLayoutView: state.taskLayout
 })
 
 export default connect<IStateProps, IDispatchProps, IComponentProps>(
   mapStateToProps
-)(LayoutView)
+)(TaskLayoutView)

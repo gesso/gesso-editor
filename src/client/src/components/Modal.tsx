@@ -1,7 +1,7 @@
 import * as React from "react"
 import { connect, DispatchProp } from "react-redux"
 import { styles } from "./Modal.style"
-import Editor from "./Editor"
+import { IState } from "../types";
 
 // Component props.
 export interface IComponentProps {
@@ -14,15 +14,14 @@ export interface IComponentProps {
 // Props from Redux store.
 interface IStateProps {
   isVisible: boolean
+  view: any
 }
 
 interface IDispatchProps {}
 
 type Props = IStateProps & IDispatchProps & IComponentProps & DispatchProp<any>
 
-const initialState = {
-  isVisible: true
-}
+const initialState = {}
 
 type State = Readonly<typeof initialState>
 
@@ -44,7 +43,7 @@ class Modal extends React.Component<Props, State> {
       // <div style={styles.overlay} onClick={this.handleOnClick}>
       //   <div style={styles.content}>foobar</div>
       // </div>
-      <div> {this.state.isVisible ? this.renderModal(true) : undefined}</div>
+      <div> {this.props.isVisible ? this.renderModal(true) : undefined}</div>
     )
   }
 
@@ -53,12 +52,12 @@ class Modal extends React.Component<Props, State> {
     this.props.onClose()
   }
 
-  private hideModal() {
-    this.setState({
-      ...this.state,
-      isVisible: false
-    })
-  }
+  // private hideModal() {
+  //   this.setState({
+  //     ...this.state,
+  //     isVisible: false
+  //   })
+  // }
 
   private renderModal(showModal: boolean) {
     if (showModal) {
@@ -66,14 +65,14 @@ class Modal extends React.Component<Props, State> {
         <div style={styles.overlay} onClick={this.handleOnClick}>
           <div style={styles.container}>
             <div style={styles.content}>
-              <div style={styles.section}>{this.props.title}</div>
+              {/* <div style={styles.section}>{this.props.title}</div>
               <div style={styles.section}>
                 optional subtitle descriptive text
-              </div>
+              </div> */}
               <div style={styles.section}>
-                <Editor />
+                {this.props.view}
               </div>
-              <div style={styles.section}>insert options here, optionally</div>
+              {/* <div style={styles.section}>insert options here, optionally</div> */}
             </div>
           </div>
         </div>
@@ -90,12 +89,11 @@ class Modal extends React.Component<Props, State> {
 
 // Map Redux state to component props.
 const mapStateToProps = (
-  state: State,
+  state: IState,
   componentProps: IComponentProps
 ): IStateProps => ({
-  ...state
-  // layoutValue: state.layout
-  // hack: null
+  isVisible: state.modal.isVisible,
+  view: state.modal.view
 })
 
 export default connect<IStateProps, IDispatchProps, IComponentProps>(
