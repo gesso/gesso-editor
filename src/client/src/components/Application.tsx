@@ -25,6 +25,19 @@ class Application extends React.Component<Props, State> {
   public render() {
     return <LayoutView />
   }
+
+  public componentDidMount() {
+    window.onscroll = () => {
+      console.log("SCROLLING")
+      if (window.pageYOffset === 0) {
+        alert("I AM AT THE TOP")
+      }
+    }
+  }
+
+  public componentWillUnmount() {
+    window.onscroll = null
+  }
 }
 
 export default Application

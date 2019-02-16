@@ -1,35 +1,35 @@
-import * as React from "react";
-import { connect, DispatchProp } from "react-redux";
-import { styles } from "./ModalScroller.style";
-import { IState } from "../types";
+import * as React from "react"
+import { connect, DispatchProp } from "react-redux"
+import { styles } from "./ModalScroller.style"
+import { IState } from "../types"
 
 // Component props.
 export interface IComponentProps {
-  title: string;
+  title: string
   // content: () => any // React.Component<any, any, any>
-  onOpen?: (event?: any) => void;
-  onClose?: (event?: any) => void;
+  onOpen?: (event?: any) => void
+  onClose?: (event?: any) => void
 }
 
 // Props from Redux store.
 interface IStateProps {
-  isVisible: boolean;
-  content: any;
+  isVisible: boolean
+  content: any
 }
 
 interface IDispatchProps {}
 
-type Props = IStateProps & IDispatchProps & IComponentProps & DispatchProp<any>;
+type Props = IStateProps & IDispatchProps & IComponentProps & DispatchProp<any>
 
-const initialState = {};
+const initialState = {}
 
-type State = Readonly<typeof initialState>;
+type State = Readonly<typeof initialState>
 
 class Scroller extends React.Component<Props, State> {
-  public readonly state: State = initialState;
+  public readonly state: State = initialState
 
   constructor(props: Props) {
-    super(props);
+    super(props)
   }
 
   public render() {
@@ -42,7 +42,7 @@ class Scroller extends React.Component<Props, State> {
       //   <div style={styles.content}>foobar</div>
       // </div>
       <div>{this.renderModal(true)}</div>
-    );
+    )
   }
 
   // private hideModal() {
@@ -66,9 +66,9 @@ class Scroller extends React.Component<Props, State> {
             <div style={styles.section}>insert options here, optionally</div>
           </div>
         </div>
-      );
+      )
     } else {
-      return null;
+      return null
     }
   }
 
@@ -84,8 +84,8 @@ const mapStateToProps = (
 ): IStateProps => ({
   isVisible: true,
   content: null
-});
+})
 
 export default connect<IStateProps, IDispatchProps, IComponentProps>(
   mapStateToProps
-)(Scroller);
+)(Scroller)

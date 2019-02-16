@@ -13,5 +13,21 @@ export const styles = {
     overflowX: "auto",
     whiteSpace: "nowrap",
     overflowY: "auto"
+  } as React.CSSProperties,
+  left: {
+    float: "left",
+    height: "100%",
+    width: "60%",
+    margin: 0,
+    padding: 0,
+    border: 0
+  } as React.CSSProperties,
+  right: {
+    float: "left",
+    height: "100%",
+    width: "40%",
+    margin: 0,
+    padding: 0,
+    border: 0
   } as React.CSSProperties
 }

@@ -1,16 +1,41 @@
 import * as _ from "lodash"
-import { createStore } from "redux"
+import { createStore, combineReducers, Reducer } from "redux"
 import { generateBlock } from "../model"
 import * as database from "../services/store"
 import {
-  IBlockLayoutColumnView,
+  ITaskLayoutColumnView,
   IHandleDropBlockAction,
   IHandleDropColumnLayoutAction,
+  IHandleDropTaskAction,
   IState,
   IBlock,
   ITask,
-  ModeType
+  ModeType,
+  IBlockLayoutColumnView
 } from "../types"
+import {
+  SET_LAYOUT_ACTION,
+  SET_MODE_ACTION,
+  HANDLE_DROP_BLOCK_ACTION,
+  HANDLE_DROP_BLOCK_COLUMN_LAYOUT_ACTION,
+  CREATE_BLOCK_ACTION,
+  SET_FOCUS_BLOCK_ACTION,
+  UNSET_FOCUS_BLOCK_ACTION,
+  SET_TARGET_BLOCK_VIEW_ACTION,
+  RESET_TARGET_BLOCK_VIEW_ACTION,
+  SET_POINTER_REFERENCE_BLOCK_VIEW_ACTION,
+  RESET_POINTER_REFERENCE_BLOCK_VIEW_ACTION,
+  HANDLE_DROP_TASK_ACTION,
+  HANDLE_DROP_TASK_COLUMN_LAYOUT_ACTION,
+  SET_FOCUS_TASK_ACTION,
+  UNSET_FOCUS_TASK_ACTION,
+  SET_TARGET_TASK_VIEW_ACTION,
+  RESET_TARGET_TASK_VIEW_ACTION,
+  OPEN_MENU_ACTION,
+  CLOSE_MENU_ACTION,
+  OPEN_MODAL_ACTION,
+  CLOSE_MODAL_ACTION
+} from "./actions"
 import * as utils from "../utils"
 
 // Actions
@@ -54,43 +79,47 @@ const reducer = (
   action /*: ActionType */
 ): IState => {
   switch (action.type) {
-    case "SET_LAYOUT":
+    case SET_LAYOUT_ACTION:
       return setLayout(state, action)
-    case "SET_MODE":
+    case SET_MODE_ACTION:
       return setMode(state, action)
-    case "HANDLE_DROP_BLOCK_COLUMN_LAYOUT":
-      return handleDropColumnLayout(state, action)
-    case "CREATE_BLOCK":
-      return createBlock(state, action)
-    case "SET_FOCUS_BLOCK":
-      return setFocusBlock(state, action)
-    case "UNSET_FOCUS_BLOCK":
-      return unsetFocusBlock(state, action)
-    case "SET_FOCUS_TASK":
-      return setFocusTask(state, action)
-    case "UNSET_FOCUS_TASK":
-      return unsetFocusTask(state, action)
-    case "HANDLE_DROP_BLOCK":
+    case HANDLE_DROP_BLOCK_ACTION:
       return handleDropBlock(state, action)
-    case "SET_TARGET_BLOCK_VIEW":
+    case HANDLE_DROP_BLOCK_COLUMN_LAYOUT_ACTION:
+      return handleDropBlockColumnLayout(state, action)
+    case CREATE_BLOCK_ACTION:
+      return createBlock(state, action)
+    case SET_FOCUS_BLOCK_ACTION:
+      return setFocusBlock(state, action)
+    case UNSET_FOCUS_BLOCK_ACTION:
+      return unsetFocusBlock(state, action)
+    case SET_TARGET_BLOCK_VIEW_ACTION:
       return setTargetBlockView(state, action)
-    case "RESET_TARGET_BLOCK_VIEW":
+    case RESET_TARGET_BLOCK_VIEW_ACTION:
       return resetTargetBlockView(state, action)
-    case "SET_POINTER_REFERENCE_BLOCK_VIEW":
+    case SET_POINTER_REFERENCE_BLOCK_VIEW_ACTION:
       return setPointerReferenceBlockView(state, action)
-    case "RESET_POINTER_REFERENCE_BLOCK_VIEW":
+    case RESET_POINTER_REFERENCE_BLOCK_VIEW_ACTION:
       return resetPointerReferenceBlockView(state, action)
-    case "SET_TARGET_TASK_VIEW":
+    case HANDLE_DROP_TASK_ACTION:
+      return handleDropTask(state, action)
+    case HANDLE_DROP_TASK_COLUMN_LAYOUT_ACTION:
+      return handleDropTaskColumnLayout(state, action)
+    case SET_FOCUS_TASK_ACTION:
+      return setFocusTask(state, action)
+    case UNSET_FOCUS_TASK_ACTION:
+      return unsetFocusTask(state, action)
+    case SET_TARGET_TASK_VIEW_ACTION:
       return setTargetTaskView(state, action)
-    case "RESET_TARGET_TASK_VIEW":
+    case RESET_TARGET_TASK_VIEW_ACTION:
       return resetTargetTaskView(state, action)
-    case "OPEN_MENU":
+    case OPEN_MENU_ACTION:
       return openMenu(state, action)
-    case "CLOSE_MENU":
+    case CLOSE_MENU_ACTION:
       return closeMenu(state, action)
-    case "OPEN_MODAL":
+    case OPEN_MODAL_ACTION:
       return openModal(state, action)
-    case "CLOSE_MODAL":
+    case CLOSE_MODAL_ACTION:
       return closeModal(state, action)
     default:
       return state
@@ -169,7 +198,7 @@ const closeModal = (state: IState, action) => {
   }
 }
 
-const handleDropColumnLayout = (
+const handleDropBlockColumnLayout = (
   state: IState,
   action: IHandleDropColumnLayoutAction
 ) => {
@@ -274,10 +303,10 @@ const handleDropBlock = (state: IState, action: IHandleDropBlockAction) => {
 
   if (targetBlock) {
     // Compose the block in another.
-    const reorderedColumnLayouts: IBlockLayoutColumnView[] = layoutValue.columnViews.reduce(
+    const reorderedColumnLayouts: ITaskLayoutColumnView[] = layoutValue.columnViews.reduce(
       (value, columnLayout) => {
         if (columnLayout.id === droppedColumnLayoutView.id) {
-          const reorderedColumnLayout = utils.applyComposeBlocks(
+          const reorderedColumnLayout: IBlockLayoutColumnView = utils.applyComposeBlocks(
             columnLayout,
             { removedIndex, addedIndex, payload, element }, // dropResult
             droppedColumnLayoutView.id,
@@ -322,7 +351,7 @@ const handleDropBlock = (state: IState, action: IHandleDropBlockAction) => {
     */
 
     const columnViews = _.cloneDeep(layoutValue.columnViews)
-    const reorderedColumnLayouts: IBlockLayoutColumnView[] = columnViews.reduce(
+    const reorderedColumnLayouts: ITaskLayoutColumnView[] = columnViews.reduce(
       (value, columnLayout) => {
         if (columnLayout.id === droppedColumnLayoutView.id) {
           const reorderedColumnLayout = utils.applyDragBlock(
@@ -437,6 +466,192 @@ const resetGazeReferenceBlockView = (state: IState, action) => {
   }
 }
 
+const handleDropTaskColumnLayout = (
+  state: IState,
+  action: IHandleDropColumnLayoutAction
+) => {
+  // console.log(`Composing block ${JSON.stringify(payload)} in block ${JSON.stringify(this.state.targetBlock)}.`)
+  // console.log(`Removing block ${JSON.stringify(payload)} from group ${}`)
+  const {
+    addedIndex,
+    droppedColumnLayout,
+    element,
+    payload,
+    removedIndex,
+    // targetColumnLayout,
+    layoutValue
+  } = action
+
+  // if (targetColumnLayout) {
+  //   const reorderedColumnLayouts: IColumnLayout[] = layoutValue.columnLayouts.reduce(
+  //     (value, columnLayout) => {
+  //       if (columnLayout.id === droppedColumnLayout.id) {
+  //         const reorderedColumnLayout = utils.applyComposeBlocks(
+  //           columnLayout,
+  //           { removedIndex, addedIndex, payload, element }, // dropResult
+  //           droppedColumnLayout.id,
+  //           // TODO(@mgub): [BUG] targetBlock is a split brain across this file and Layout.tsx. Move to Redux.
+  //           targetColumnLayout,
+  //           // Refactored:
+  //           state,
+  //           action
+  //         )
+  //         if (reorderedColumnLayout.blockViews.length > 0) {
+  //           value.push(reorderedColumnLayout)
+  //         }
+  //         return value
+  //       } else {
+  //         value.push(columnLayout)
+  //         return value
+  //       }
+  //     },
+  //     []
+  //   )
+
+  //   // TOOD: Refactor
+  //   return {
+  //     ...state,
+  //     groups: reorderedColumnLayouts
+  //   }
+  // } else {
+  // TODO: <MOVE_INTO_HANDLE_DROP>
+  /*
+  console.log(
+    `DROPPED in ${
+      droppedColumnLayout.id
+    }: removedIndex: ${removedIndex}, addedIndex: ${addedIndex}, payload: ${JSON.stringify(
+      payload,
+      null,
+      2
+    )}, element: ${element}}`
+  )
+  */
+
+  // const columnLayouts = _.cloneDeep(layoutValue.columnLayouts)
+  // const reorderedColumnLayouts: IColumnLayout[] = columnLayouts.reduce(
+  //   (value, columnLayout) => {
+  // if (columnLayout.id === droppedColumnLayout.id) {
+  const reorderedColumnViews = utils.applyDragColumnLayout(
+    layoutValue.columnViews,
+    { removedIndex, addedIndex, payload, element } // dropResult
+    // Refactored:
+  )
+  // value.push(reorderedColumnLayout)
+  // return value
+  // } else {
+  //   value.push(columnLayout)
+  //   return value
+  // }
+  //   },
+  //   []
+  // )
+
+  // TOOD: Refactor
+  return {
+    ...state,
+    layout: {
+      ...state.layout,
+      columnViews: reorderedColumnViews
+    }
+  } as IState
+  // }
+}
+
+const handleDropTask = (state: IState, action: IHandleDropTaskAction) => {
+  console.log("handleDropTask")
+  const {
+    addedIndex,
+    droppedColumnLayout: droppedColumnLayoutView,
+    element,
+    payload,
+    removedIndex,
+    targetTask,
+    layoutValue
+  } = action
+
+  if (targetTask) {
+    // Compose the block in another.
+    /*
+    const reorderedColumnLayouts: ITaskLayoutColumnView[] = layoutValue.columnViews.reduce(
+      (value, columnLayout) => {
+        if (columnLayout.id === droppedColumnLayoutView.id) {
+          const reorderedColumnLayout: ITaskLayoutColumnView = utils.applyComposeBlocks(
+            columnLayout,
+            { removedIndex, addedIndex, payload, element }, // dropResult
+            droppedColumnLayoutView.id,
+            // TODO(@mgub): [BUG] targetBlock is a split brain across this file and Layout.tsx. Move to Redux.
+            targetTask,
+            // Refactored:
+            state,
+            action
+          )
+          if (reorderedColumnLayout.blockViews.length > 0) {
+            value.push(reorderedColumnLayout)
+          }
+          return value
+        } else {
+          value.push(columnLayout)
+          return value
+        }
+      },
+      []
+    )
+
+    // TOOD: Refactor
+    return {
+      ...state,
+      layout: {
+        ...state.layout,
+        columnViews: reorderedColumnLayouts
+      }
+    } as IState
+    */
+  } else {
+    // TODO: <MOVE_INTO_HANDLE_DROP>
+    /*
+    console.log(
+      `DROPPED in ${
+        droppedColumnLayoutView.id
+      }: removedIndex: ${removedIndex}, addedIndex: ${addedIndex}, payload: ${JSON.stringify(
+        payload,
+        null,
+        2
+      )}, element: ${element}}`
+    )
+    */
+    console.log("Dropped task")
+
+    const columnViews = _.cloneDeep(layoutValue.columnViews)
+    const reorderedColumnLayouts: ITaskLayoutColumnView[] = columnViews.reduce(
+      (value, columnLayoutView) => {
+        if (columnLayoutView.id === droppedColumnLayoutView.id) {
+          const reorderedColumnLayout: ITaskLayoutColumnView = utils.applyDragTask(
+            columnLayoutView,
+            { removedIndex, addedIndex, payload, element } // dropResult
+          )
+          if (reorderedColumnLayout.taskViews.length > 0) {
+            value.push(reorderedColumnLayout)
+          }
+          return value
+        } else {
+          value.push(columnLayoutView)
+          return value
+        }
+      },
+      []
+    )
+
+    // TOOD: Refactor
+    return {
+      ...state,
+      layout: {
+        ...state.layout,
+        columnViews: reorderedColumnLayouts
+      }
+    } as IState
+  }
+}
+
 const setTargetTaskView = (state: IState, action) => {
   return {
     ...state,
@@ -528,6 +743,16 @@ export const store = createStore(
   reducer
   // window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 )
+
+// Reference:
+// - https://medium.com/@resir014/a-type-safe-approach-to-redux-stores-in-typescript-6474e012b81e
+// export const reducers: Reducer<ApplicationState> = combineReducers<
+// export const reducers: Reducer<IState> = combineReducers<IState>({
+//   application: reducer
+//   // router: routerReducer,
+//   // chat: chatReducer,
+//   // layout: layoutReducer
+// })
 
 export const getStore = () => {
   return store

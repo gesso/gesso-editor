@@ -1,65 +1,84 @@
-import * as React from "react";
-import { connect, DispatchProp } from "react-redux";
-import { Draggable } from "react-smooth-dnd";
-import { ITask, ITaskView, IState } from "../types";
-import * as styles from "./TaskView.styles";
-import Icon from "./Ico";
-import ModalScroller from "./ModalScroller";
+import * as React from "react"
+import { connect, DispatchProp } from "react-redux"
+import { Draggable } from "react-smooth-dnd"
+import { ITask, ITaskView, IState } from "../types"
+import * as styles from "./TaskView.styles"
+import Icon from "./Ico"
+import ModalScroller from "./ModalScroller"
 
-const initialState = {};
+import { Icon as Icon2 } from "react-icons-kit"
+import { iosArrowForward } from "react-icons-kit/ionicons/"
 
-type State = Readonly<typeof initialState>;
+const initialState = {}
+
+type State = Readonly<typeof initialState>
 
 // Component props.
 export interface IComponentProps {
-  key: string;
-  view: string;
-  id: string;
-  onTarget: (task: ITaskView) => void;
-  onUntarget: (task: ITaskView) => void;
+  key: string
+  view: string
+  id: string
+  onTarget: (task: ITaskView) => void
+  onUntarget: (task: ITaskView) => void
 }
 
 // Props from Redux store.
 interface IStateProps {
-  taskView: ITaskView;
-  taskValue: ITask;
+  taskView: ITaskView
+  taskValue: ITask
 }
 
 interface IDispatchProps {}
 
-type Props = IStateProps & IDispatchProps & IComponentProps & DispatchProp<any>;
+type Props = IStateProps & IDispatchProps & IComponentProps & DispatchProp<any>
 
 class TaskView extends React.Component<Props, State> {
   constructor(props: Props) {
-    super(props);
+    super(props)
   }
 
   public render() {
-    return this.renderTask();
+    return this.renderTask()
   }
 
   private renderTask() {
     const taskStyle = {
-      ...styles.container,
+      ...styles.title,
       // ...{
       //   opacity: Math.random()
       // },
       ...(this.props.taskView && this.props.taskView.hasFocus
         ? { backgroundColor: "#f0f0f0" }
         : {})
-    };
+    }
     return (
       <Draggable key={this.props.key}>
-        <div
-          style={taskStyle}
-          onMouseEnter={this.handleMouseEnter}
-          onMouseLeave={this.handleMouseLeave}
-          onDragEnter={this.handleDragEnter}>
-          {this.renderTaskName()}
-          {this.renderActionIcons()}
+        <div style={styles.container}>
+          <div
+            style={taskStyle}
+            onMouseEnter={this.handleMouseEnter}
+            onMouseLeave={this.handleMouseLeave}
+            onDragEnter={this.handleDragEnter}>
+            {this.renderTaskName()}
+            {this.renderActionIcons()}
+            <span>
+              <Icon2 style={{ color: "#F4A261" }} icon={iosArrowForward} />
+            </span>
+          </div>
+          <div>
+            <div>
+              <input type="checkbox" name="task-1" value="task-value" />
+            </div>
+            <div>
+              <input type="checkbox" name="task-1" value="task-value" />
+            </div>
+            <div>
+              <input type="checkbox" name="task-1" value="task-value" />
+            </div>
+          </div>
         </div>
       </Draggable>
-    );
+    )
   }
 
   private renderTaskName() {
@@ -74,7 +93,7 @@ class TaskView extends React.Component<Props, State> {
             })`
           : this.props.taskValue.name}
       </span>
-    );
+    )
   }
 
   private renderActionIcons() {
@@ -87,19 +106,19 @@ class TaskView extends React.Component<Props, State> {
           ? Icon({
               name: "compositeTask",
               onSelectOption: event => {
-                console.log("Clicked on code!!!!!!!!!!!!");
-                this.showModal(event);
+                console.log("Clicked on code!!!!!!!!!!!!")
+                this.showModal(event)
               }
             })
           : Icon({
               name: "task",
               onSelectOption: event => {
-                console.log("Clicked on code!!!!!!!!!!!!");
-                this.showModal(event);
+                console.log("Clicked on code!!!!!!!!!!!!")
+                this.showModal(event)
               }
             })}
       </span>
-    );
+    )
   }
 
   // TODO: Turn this into a Redux action and allow the different modals' states
@@ -107,33 +126,35 @@ class TaskView extends React.Component<Props, State> {
   private showModal = event => {
     this.props.dispatch({
       type: "OPEN_MODAL",
-      view: <ModalScroller title="dumb! ...add assign operation to select coder or role/specialty/skill set." />
-    });
+      view: (
+        <ModalScroller title="dumb! ...add assign operation to select coder or role/specialty/skill set." />
+      )
+    })
     this.props.dispatch({
       type: "CLOSE_MENU"
-    });
-  };
+    })
+  }
 
   private handleMouseEnter = enter => {
     this.props.dispatch({
       type: "SET_FOCUS_TASK",
       view: this.props.taskView
-    });
-    this.props.onTarget(this.props.taskView);
-  };
+    })
+    this.props.onTarget(this.props.taskView)
+  }
 
   private handleMouseLeave = event => {
     this.props.dispatch({
       type: "UNSET_FOCUS_TASK",
       view: this.props.taskView
-    });
+    })
 
-    this.props.onUntarget(this.props.taskView);
-  };
+    this.props.onUntarget(this.props.taskView)
+  }
 
   private handleDragEnter = (event: React.DragEvent<HTMLDivElement>) => {
     // console.log("onDragEnter");
-  };
+  }
 }
 
 // Map Redux state to component props.
@@ -143,11 +164,11 @@ const mapStateToProps = (
   componentProps: IComponentProps
 ): IStateProps => ({
   taskValue: Object.values(state.tasks).filter(task => {
-    return task.id === componentProps.id;
+    return task.id === componentProps.id
   })[0],
   taskView: state.views[componentProps.view] as ITaskView
-});
+})
 
 export default connect<IStateProps, IDispatchProps, IComponentProps>(
   mapStateToProps
-)(TaskView);
+)(TaskView)

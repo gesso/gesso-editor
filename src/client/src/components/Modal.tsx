@@ -1,7 +1,7 @@
 import * as React from "react"
 import { connect, DispatchProp } from "react-redux"
 import { styles } from "./Modal.style"
-import { IState } from "../types";
+import { IState } from "../types"
 
 // Component props.
 export interface IComponentProps {
@@ -69,9 +69,7 @@ class Modal extends React.Component<Props, State> {
               <div style={styles.section}>
                 optional subtitle descriptive text
               </div> */}
-              <div style={styles.section}>
-                {this.props.view}
-              </div>
+              <div style={styles.section}>{this.props.view}</div>
               {/* <div style={styles.section}>insert options here, optionally</div> */}
             </div>
           </div>

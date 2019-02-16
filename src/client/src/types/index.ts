@@ -6,13 +6,6 @@ import * as React from "react"
 //
 // ----------------------------------------------------------------------------
 
-// export interface IBlockType {
-//   id: string
-//   type: "BLOCK_TYPE"
-// }
-
-// export type IType = IBlockType
-
 export interface IEntity {
   id: string
 }
@@ -21,12 +14,14 @@ export interface IBlock {
   id: string
   name: string
   blocks?: IBlock[]
+  // TODO(@mgub): Refactor to only include only list of block identifiers and load them from the Redux store.
 }
 
 export interface ITask {
   id: string
   name: string
   tasks?: ITask[]
+  // TODO(@mgub): Refactor to only include only list of block identifiers and load them from the Redux store.
 }
 
 // TODO: IHorizontalLayout (contains IColumnLayouts)
@@ -161,61 +156,3 @@ export interface IHandleDropTaskAction {
 }
 
 export type ActionType = IHandleDropAction
-
-// ----------------------------------------------------------------------------
-//
-//  WIP.
-//
-// ----------------------------------------------------------------------------
-
-/*
-interface IStateDraft {
-  // Content.
-  blocks: IBlock[]
-
-  // Layout.
-  blockContainers: IBoardLayoutContainer[]
-}
-
-// ----------------------------------------------------------------------------
-
-type RenderStateOpen = "VIEW_STATE_OPEN"
-
-type RenderStateDetail = "VIEW_STATE_DETAIL"
-
-const DEFAULT_VIEW_STATE = "VIEW_STATE_OPEN" as RenderStateOpen
-
-// Purely a layout component. No style, just function.
-// Horizontal drag and drop. <Container>.
-interface IBoardLayoutContainer {
-  id: string
-  boardLayout: IBoardLayout[]
-}
-
-// Horizontal drag and drop. <Draggable>.
-interface IBoardLayout {
-  id: string
-  // script: IScript
-  blockLayoutContainer: IBlockLayout[]
-  isOpen: boolean
-}
-
-// Vertical drag and drop. <Container>.
-type IBlockLayout = IBlockOpenLayout | IBlockClosedLayout
-
-// Vertical drag and drop. <Draggable>.
-interface IBlockOpenLayout {
-  id: string
-  type: "BLOCK_OPEN_LAYOUT_VIEW"
-  block: IBlock
-}
-
-// Render closed block.
-interface IBlockClosedLayout {
-  id: string
-  type: "BLOCK_CLOSED_LAYOUT_VIEW"
-  block: IBlock
-}
-*/
-
-// IProcessor // Accepts a script.

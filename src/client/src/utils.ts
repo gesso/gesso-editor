@@ -2,14 +2,11 @@ import {
   IBlock,
   IBlockView,
   IBlockLayoutColumnView,
+  ITaskLayoutColumnView,
   IHandleDropBlockAction,
   IHandleDropColumnLayoutAction,
   IState
 } from "./types"
-
-interface IApplyDrag {
-  blockList: IBlock
-}
 
 // TODO: Replace with Redux action.
 export const applyComposeBlocks = (
@@ -68,6 +65,11 @@ export const applyComposeBlocks = (
   return columnLayoutView
 }
 
+interface IApplyDragBlock {
+  columnLayout: IBlockLayoutColumnView
+  dragResult: any
+}
+
 // TODO: Replace with Redux action.
 export const applyDragBlock = (
   columnLayout: IBlockLayoutColumnView,
@@ -98,6 +100,57 @@ export const applyDragColumnLayout = (
   columnLayouts: IBlockLayoutColumnView[],
   dragResult: any
 ): IBlockLayoutColumnView[] => {
+  const { removedIndex, addedIndex, payload } = dragResult
+  if (removedIndex === null && addedIndex === null) {
+    return columnLayouts
+  }
+
+  const reorderedColumnLayouts = [...columnLayouts]
+  let itemToAdd = payload
+
+  if (removedIndex !== null) {
+    itemToAdd = reorderedColumnLayouts.splice(removedIndex, 1)[0]
+  }
+
+  if (addedIndex !== null) {
+    reorderedColumnLayouts.splice(addedIndex, 0, itemToAdd)
+  }
+
+  columnLayouts = reorderedColumnLayouts
+
+  return columnLayouts
+}
+
+// TODO: Replace with Redux action.
+export const applyDragTask = (
+  columnLayout: ITaskLayoutColumnView,
+  dragResult: any
+): ITaskLayoutColumnView => {
+  const { removedIndex, addedIndex, payload } = dragResult
+  if (removedIndex === null && addedIndex === null) {
+    return columnLayout
+  }
+
+  const result = [...columnLayout.taskViews]
+  let itemToAdd = payload
+
+  if (removedIndex !== null) {
+    itemToAdd = result.splice(removedIndex, 1)[0]
+  }
+
+  if (addedIndex !== null) {
+    result.splice(addedIndex, 0, itemToAdd)
+  }
+
+  columnLayout.taskViews = result
+
+  return columnLayout
+}
+
+export const applyDragTaskColumnLayout = (
+  columnLayouts: ITaskLayoutColumnView[],
+  dragResult: any
+): ITaskLayoutColumnView[] => {
   const { removedIndex, addedIndex, payload } = dragResult
   if (removedIndex === null && addedIndex === null) {
     return columnLayouts

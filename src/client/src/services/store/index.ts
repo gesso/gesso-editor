@@ -25,22 +25,6 @@ export const fetchBlockViewLayout = (
   })
 }
 
-// export interface IFetchTaskLayoutRandomOptions {
-//   minColumnCount: number
-//   maxColumnCount: number
-//   tasks: ITask[]
-// }
-
-// export interface IFetchTaskLayoutInputOptions {
-//   minColumnCount: number
-//   maxColumnCount: number
-//   tasks: ITask[]
-// }
-
-// export type IFetchTaskLayoutOption =
-//   | IFetchTaskLayoutRandomOptions
-//   | IFetchTaskLayoutInputOptions
-
 export const fetchTaskViewLayout = (
   minColumnCount: number = 0,
   maxColumnCount: number,

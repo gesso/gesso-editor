@@ -67,7 +67,7 @@ class TaskLayoutView extends React.Component<Props, {}> {
         layoutValue: this.props.taskLayoutView,
         payload,
         removedIndex,
-        // targetBlock: this.props.targetBlock,
+        // targetTask: this.props.targetBlock,
         type: "HANDLE_DROP_TASK_COLUMN_LAYOUT"
         // reorderedColumnLayouts,
       } as IHandleDropColumnLayoutAction)
@@ -75,7 +75,7 @@ class TaskLayoutView extends React.Component<Props, {}> {
   }
 
   private handleDragStart = ({ isSource, payload, willAcceptDrop }) => {
-    console.log("handleDragStart");
+    console.log("handleDragStart")
     /*
     console.log(
       `isSource: ${isSource}, payload: ${JSON.stringify(

@@ -2,7 +2,7 @@ import * as React from "react"
 import { connect, DispatchProp } from "react-redux"
 import { Container } from "react-smooth-dnd"
 import {
-  IBlockLayoutColumnView,
+  ITaskLayoutColumnView,
   IHandleDropColumnLayoutAction,
   IBlockLayoutView,
   IState
@@ -50,12 +50,12 @@ class BlockLayoutView extends React.Component<Props, {}> {
     )
   }
 
-  private handleGetChildPayload = (columnLayouts: IBlockLayoutColumnView[]) => {
+  private handleGetChildPayload = (columnLayouts: ITaskLayoutColumnView[]) => {
     console.log("handleGetChildPayload")
     return index => columnLayouts[index]
   }
 
-  private handleDrop = (droppedColumnLayout: IBlockLayoutColumnView[]) => {
+  private handleDrop = (droppedColumnLayout: ITaskLayoutColumnView[]) => {
     console.log("handleDrop")
     return dropResult => {
       const { removedIndex, addedIndex, payload, element } = dropResult
@@ -75,7 +75,7 @@ class BlockLayoutView extends React.Component<Props, {}> {
   }
 
   private handleDragStart = ({ isSource, payload, willAcceptDrop }) => {
-    console.log("handleDragStart");
+    console.log("handleDragStart")
     /*
     console.log(
       `isSource: ${isSource}, payload: ${JSON.stringify(

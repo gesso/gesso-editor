@@ -83,7 +83,7 @@ class TaskLayoutColumnView extends React.Component<Props, {}> {
   }
 
   private handleDragStart = ({ isSource, payload, willAcceptDrop }) => {
-    console.log("handleDragStart");
+    console.log("handleDragStart")
     /*
     console.log(
       `isSource: ${isSource}, payload: ${JSON.stringify(
