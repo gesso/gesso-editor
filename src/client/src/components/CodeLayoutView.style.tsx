@@ -7,7 +7,7 @@ export const styles = {
     display: "flex",
     height: "100%",
     width: "100%",
-    justifyContent: "center",
+    justifyContent: "top",
     margin: 0,
     transition: "all .5s linear",
     overflowX: "auto",
@@ -16,15 +16,15 @@ export const styles = {
   } as React.CSSProperties,
   left: {
     float: "left",
-    height: "100%",
+    height: "200px",
     width: "60%",
     margin: 0,
-    padding: 0,
+    padding: "0 0 0 20px",
     border: 0
   } as React.CSSProperties,
   right: {
     float: "left",
-    height: "100%",
+    height: "200px",
     width: "40%",
     margin: 0,
     padding: 0,

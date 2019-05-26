@@ -88,15 +88,17 @@ export interface IState {
   targetTask: ITaskView
   views: IViewStore
   mode: ModeType
-  menu: {
-    isVisible: boolean
-  }
+  menu: IMenuState
   modal: IModalState
 }
 
-interface IModalState {
+export interface IModalState {
   isVisible: boolean
   view: React.Component
+}
+
+export interface IMenuState {
+  isVisible: boolean
 }
 
 interface IBlockActions {

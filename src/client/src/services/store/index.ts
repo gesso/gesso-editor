@@ -19,7 +19,7 @@ export const fetchBlockViewLayout = (
   blocks: IBlock[]
 ): IBlockLayoutView => {
   return generateBlockViewLayout({
-    minColumnCount: 0,
+    minColumnCount: 1,
     maxColumnCount,
     tasks: blocks
   })

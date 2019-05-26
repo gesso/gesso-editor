@@ -2,7 +2,7 @@ import * as React from "react"
 import { connect, DispatchProp } from "react-redux"
 import * as styles from "./Menu.style"
 import MenuOption from "./MenuOption"
-import { ModeType } from "../types"
+import { ModeType, IMenuState, IState } from "../types"
 
 // Component props.
 export interface IComponentProps {
@@ -10,16 +10,14 @@ export interface IComponentProps {
 }
 
 // Props from Redux store.
-interface IStateProps {}
+interface IStateProps {
+  // mode: ModeType
+  menu: IMenuState
+}
 
 interface IDispatchProps {}
 
 type Props = IStateProps & IDispatchProps & IComponentProps & DispatchProp<any>
-
-interface IState {
-  mode: ModeType
-  menu
-}
 
 class LayoutView extends React.Component<Props, {}> {
   constructor(props: Props) {
@@ -56,7 +54,7 @@ class LayoutView extends React.Component<Props, {}> {
         />
         <div style={styles.menuOption}>&rarr;</div>
         <MenuOption label="task" onClick={this.handleClickModeOption("task")} />
-        <div style={styles.menuOption}>&larr;</div>
+        <div style={styles.menuOption}>&rarr;</div>
         <MenuOption
           label="describe"
           onClick={this.handleClickModeOption('context (e.g., "app server")')}

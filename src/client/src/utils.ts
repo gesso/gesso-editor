@@ -8,6 +8,12 @@ import {
   IState
 } from "./types"
 
+// ----------------------------------------------------------------------------
+//
+//  Task.
+//
+// ----------------------------------------------------------------------------
+
 // TODO: Replace with Redux action.
 export const applyComposeBlocks = (
   columnLayoutView: IBlockLayoutColumnView,
@@ -121,6 +127,12 @@ export const applyDragColumnLayout = (
   return columnLayouts
 }
 
+// ----------------------------------------------------------------------------
+//
+//  Task.
+//
+// ----------------------------------------------------------------------------
+
 // TODO: Replace with Redux action.
 export const applyDragTask = (
   columnLayout: ITaskLayoutColumnView,
@@ -151,6 +163,7 @@ export const applyDragTaskColumnLayout = (
   columnLayouts: ITaskLayoutColumnView[],
   dragResult: any
 ): ITaskLayoutColumnView[] => {
+  console.log("APPLY DRAG TASK COLUMN LAYOUT")
   const { removedIndex, addedIndex, payload } = dragResult
   if (removedIndex === null && addedIndex === null) {
     return columnLayouts

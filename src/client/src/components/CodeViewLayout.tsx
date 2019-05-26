@@ -1,12 +1,11 @@
 import * as React from "react"
 import { connect, DispatchProp } from "react-redux"
-import { IBlockLayoutView, IState } from "../types"
+import { IBlockLayoutView, IState, ModeType, IMenuState } from "../types"
 import { styles } from "./CodeLayoutView.style"
 import Editor from "./Editor"
+import { CLOSE_MENU_ACTION, OPEN_MENU_ACTION } from "src/store/actions"
 
-const initialState = {
-  isMenuVisible: false
-}
+const initialState = {}
 
 type State = Readonly<typeof initialState>
 
@@ -16,12 +15,16 @@ export interface IComponentProps {}
 // Props from Redux store.
 interface IStateProps {
   blockLayoutView?: IBlockLayoutView
+  menu: IMenuState
 }
 
 interface IDispatchProps {}
 
 type Props = IStateProps & IDispatchProps & IComponentProps & DispatchProp<any>
-
+// interface IState {
+//   mode: ModeType
+//   menu: IMenuState
+// }
 class BlockLayoutView extends React.Component<Props, State> {
   // class BlockLayoutView extends React.Component<Props, {}> {
   public readonly state: State = initialState
@@ -34,7 +37,7 @@ class BlockLayoutView extends React.Component<Props, State> {
     return (
       <div
         data-component="layout"
-        onWheel={this.wheel}
+        onWheel={this.handleMouseWheel}
         style={styles.container}>
         <div style={styles.left}>
           <Editor
@@ -56,21 +59,30 @@ class BlockLayoutView extends React.Component<Props, State> {
     )
   }
 
-  private wheel = event => {
+  private handleMouseWheel = event => {
     // TODO(@mgub): Scroll down if ≥50 events received within 500 ms.
     console.log("[event] onWheel")
-    if (window.pageYOffset === 0 && !this.state.isMenuVisible) {
+    console.log(this.props.menu.isVisible)
+    if (window.pageYOffset === 0 && !!this.props.menu.isVisible) {
       console.log("Scrolling menu down from top")
-      this.setState({
-        isMenuVisible: true
-      })
+      this.hideMenu()
       setTimeout(() => {
         console.log("Hiding menu")
-        this.setState({
-          isMenuVisible: false
-        })
-      }, 1000)
+        this.showMenu()
+      }, 3000)
     }
+  }
+
+  private showMenu = () => {
+    this.props.dispatch({
+      type: OPEN_MENU_ACTION
+    })
+  }
+
+  private hideMenu = () => {
+    this.props.dispatch({
+      type: CLOSE_MENU_ACTION
+    })
   }
 }
 
@@ -79,7 +91,8 @@ const mapStateToProps = (
   state: IState,
   componentProps: IComponentProps
 ): IStateProps => ({
-  blockLayoutView: state.layout
+  blockLayoutView: state.layout,
+  menu: state.menu
 })
 
 export default connect<IStateProps, IDispatchProps, IComponentProps>(

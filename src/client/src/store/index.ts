@@ -40,7 +40,7 @@ import * as utils from "../utils"
 
 // Actions
 
-const blocks: IBlock[] = database.fetchBlocks(20)
+const blocks: IBlock[] = database.fetchBlocks(40)
 const tasks: ITask[] = database.fetchTasks(20)
 
 const initialState: IState = {
@@ -531,7 +531,7 @@ const handleDropTaskColumnLayout = (
   // const reorderedColumnLayouts: IColumnLayout[] = columnLayouts.reduce(
   //   (value, columnLayout) => {
   // if (columnLayout.id === droppedColumnLayout.id) {
-  const reorderedColumnViews = utils.applyDragColumnLayout(
+  const reorderedColumnViews = utils.applyDragTaskColumnLayout(
     layoutValue.columnViews,
     { removedIndex, addedIndex, payload, element } // dropResult
     // Refactored:
@@ -549,7 +549,7 @@ const handleDropTaskColumnLayout = (
   // TOOD: Refactor
   return {
     ...state,
-    layout: {
+    taskLayout: {
       ...state.layout,
       columnViews: reorderedColumnViews
     }
@@ -644,7 +644,7 @@ const handleDropTask = (state: IState, action: IHandleDropTaskAction) => {
     // TOOD: Refactor
     return {
       ...state,
-      layout: {
+      taskLayout: {
         ...state.layout,
         columnViews: reorderedColumnLayouts
       }
@@ -762,7 +762,7 @@ export const getStore = () => {
 // export const initializeLayout = () => {
 store.dispatch({
   type: "SET_LAYOUT",
-  layout: database.fetchBlockViewLayout(10, blocks),
+  layout: database.fetchBlockViewLayout(5, blocks),
   taskLayout: database.fetchTaskViewLayout(4, 4, tasks)
 })
 // }

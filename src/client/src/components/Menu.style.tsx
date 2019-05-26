@@ -14,6 +14,5 @@ export const menu = {
   minHeight: "50px",
   position: "fixed",
   top: "0px",
-  zIndex: 10,
-  backgroundColor: "white"
+  zIndex: 10
 } as React.CSSProperties

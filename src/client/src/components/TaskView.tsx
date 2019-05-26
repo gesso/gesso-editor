@@ -8,6 +8,10 @@ import ModalScroller from "./ModalScroller"
 
 import { Icon as Icon2 } from "react-icons-kit"
 import { iosArrowForward } from "react-icons-kit/ionicons/"
+import {
+  SET_FOCUS_TASK_ACTION,
+  UNSET_FOCUS_TASK_ACTION
+} from "src/store/actions"
 
 const initialState = {}
 
@@ -59,33 +63,25 @@ class TaskView extends React.Component<Props, State> {
             onMouseEnter={this.handleMouseEnter}
             onMouseLeave={this.handleMouseLeave}
             onDragEnter={this.handleDragEnter}>
+            {this.renderTaskActions()}
             {this.renderTaskName()}
-            {this.renderActionIcons()}
             <span>
               <Icon2 style={{ color: "#F4A261" }} icon={iosArrowForward} />
             </span>
           </div>
-          <div>
-            <div>
-              <input type="checkbox" name="task-1" value="task-value" />
-            </div>
-            <div>
-              <input type="checkbox" name="task-1" value="task-value" />
-            </div>
-            <div>
-              <input type="checkbox" name="task-1" value="task-value" />
-            </div>
-          </div>
+          {this.renderTaskList()}
         </div>
       </Draggable>
     )
   }
 
-  private renderTaskName() {
+  private renderTaskName = () => {
     return (
       <span
         style={{
-          ...styles.name
+          ...styles.name,
+          margin: "0px 8px 0px 8px",
+          width: "100%"
         }}>
         {this.props.taskValue.tasks && this.props.taskValue.tasks.length > 0
           ? `${this.props.taskValue.name} (${
@@ -96,28 +92,95 @@ class TaskView extends React.Component<Props, State> {
     )
   }
 
-  private renderActionIcons() {
+  private renderTaskActions() {
     return (
-      <span
-        style={{
-          marginLeft: "auto"
-        }}>
+      <span>
         {this.props.taskValue.tasks.length > 1
           ? Icon({
               name: "compositeTask",
               onSelectOption: event => {
-                console.log("Clicked on code!!!!!!!!!!!!")
+                console.log("Clicked on code!")
                 this.showModal(event)
               }
             })
           : Icon({
               name: "task",
               onSelectOption: event => {
-                console.log("Clicked on code!!!!!!!!!!!!")
+                console.log("Clicked on code!")
                 this.showModal(event)
               }
             })}
       </span>
+    )
+  }
+
+  private renderTaskList = () => {
+    return (
+      <div
+        style={{
+          padding: "3px 5px 3px 5px"
+        }}>
+        <div
+          style={{
+            display: "flex"
+          }}>
+          <div>
+            {Icon({
+              name: "task",
+              onSelectOption: event => {
+                console.log("Clicked on code!")
+                this.showModal(event)
+              }
+            })}
+          </div>
+          <div
+            style={{
+              margin: "0px 8px 0px 8px"
+            }}>
+            Some specific task
+          </div>
+        </div>
+        <div
+          style={{
+            display: "flex"
+          }}>
+          <div>
+            {Icon({
+              name: "task",
+              onSelectOption: event => {
+                console.log("Clicked on code!")
+                this.showModal(event)
+              }
+            })}
+          </div>
+          <div
+            style={{
+              margin: "0px 8px 0px 8px"
+            }}>
+            Some specific task
+          </div>
+        </div>
+        <div
+          style={{
+            display: "flex"
+          }}>
+          <div>
+            {Icon({
+              name: "task",
+              onSelectOption: event => {
+                console.log("Clicked on code!")
+                this.showModal(event)
+              }
+            })}
+          </div>
+          <div
+            style={{
+              margin: "0px 8px 0px 8px"
+            }}>
+            Some specific task
+          </div>
+        </div>
+      </div>
     )
   }
 
@@ -137,7 +200,7 @@ class TaskView extends React.Component<Props, State> {
 
   private handleMouseEnter = enter => {
     this.props.dispatch({
-      type: "SET_FOCUS_TASK",
+      type: SET_FOCUS_TASK_ACTION,
       view: this.props.taskView
     })
     this.props.onTarget(this.props.taskView)
@@ -145,7 +208,7 @@ class TaskView extends React.Component<Props, State> {
 
   private handleMouseLeave = event => {
     this.props.dispatch({
-      type: "UNSET_FOCUS_TASK",
+      type: UNSET_FOCUS_TASK_ACTION,
       view: this.props.taskView
     })
 
@@ -169,6 +232,13 @@ const mapStateToProps = (
   taskView: state.views[componentProps.view] as ITaskView
 })
 
+function mapDispatchToProps(dispatch) {
+  return {
+    // setFocusTask: () => dispatch()
+  }
+}
+
 export default connect<IStateProps, IDispatchProps, IComponentProps>(
   mapStateToProps
+  // mapDispatchToProps
 )(TaskView)

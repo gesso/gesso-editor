@@ -7,9 +7,7 @@ export class BlockRepository extends DefaultCrudRepository<
   Block,
   typeof Block.prototype.id
 > {
-  constructor(
-    @inject('datasources.db') dataSource: DbDataSource,
-  ) {
+  constructor(@inject('datasources.db') dataSource: DbDataSource) {
     super(Block, dataSource);
   }
 }

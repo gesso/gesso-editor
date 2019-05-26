@@ -38,7 +38,7 @@ class TaskLayoutColumnView extends React.Component<Props, {}> {
             <span>{this.props.columnLayout.name}</span>
           </div>
           <Container
-            groupName="2"
+            groupName="3"
             orientation="vertical"
             getChildPayload={this.handleGetChildPayload(
               this.props.columnLayout.taskViews
@@ -67,6 +67,7 @@ class TaskLayoutColumnView extends React.Component<Props, {}> {
   }
 
   private handleDrop = (droppedColumnLayout: ITaskLayoutColumnView) => {
+    console.log("DROPPED TASK COLUMN")
     return dropResult => {
       const { removedIndex, addedIndex, payload, element } = dropResult
       this.props.dispatch({
