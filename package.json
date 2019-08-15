@@ -10,7 +10,7 @@
     "@types/slate-react": "0.18.0",
     "@types/uuid": "3.4.4",
     "project-name-generator": "2.1.5",
-    "react": "^16.5.2",
+    "react": "^16.6.0",
     "react-dom": "^16.5.2",
     "react-icons-kit": "1.1.12",
     "react-redux": "5.0.7",
