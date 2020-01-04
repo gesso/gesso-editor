@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@types/lodash": "4.14.116",
+    "@types/lodash": "4.14.117",
     "@types/react-redux": "6.0.9",
     "@types/redux": "3.6.0",
     "@types/slate": "0.40.0",
