@@ -3,7 +3,7 @@ import { connect, DispatchProp } from "react-redux"
 import { Draggable } from "react-smooth-dnd"
 import { ITask, ITaskView, IState } from "../types"
 import * as styles from "./TaskView.styles"
-import Icon from "./Ico"
+import Icon from "./Icon"
 import ModalScroller from "./ModalScroller"
 import { ModeType } from "../types"
 
@@ -11,7 +11,7 @@ import { Icon as Icon2 } from "react-icons-kit"
 import { iosArrowForward } from "react-icons-kit/ionicons/"
 import {
   SET_FOCUS_TASK_ACTION,
-  UNSET_FOCUS_TASK_ACTION
+  UNSET_FOCUS_TASK_ACTION,
 } from "src/store/actions"
 
 const initialState = {}
@@ -54,7 +54,7 @@ class TaskView extends React.Component<Props, State> {
       // },
       ...(this.props.taskView && this.props.taskView.hasFocus
         ? { backgroundColor: "#f0f0f0" }
-        : {})
+        : {}),
     }
     return (
       <Draggable key={this.props.key}>
@@ -83,13 +83,11 @@ class TaskView extends React.Component<Props, State> {
           ...styles.name,
           margin: "0px 8px 0px 8px",
           width: "100%",
-          fontWeight: 600
+          fontWeight: 600,
         }}
         onClick={this.handleSelectTask}>
         {this.props.taskValue.tasks && this.props.taskValue.tasks.length > 0
-          ? `${this.props.taskValue.name} (${
-              this.props.taskValue.tasks.length
-            })`
+          ? `${this.props.taskValue.name} (${this.props.taskValue.tasks.length})`
           : this.props.taskValue.name}
       </span>
     )
@@ -101,17 +99,17 @@ class TaskView extends React.Component<Props, State> {
         {this.props.taskValue.tasks.length > 1
           ? Icon({
               name: "compositeTask",
-              onSelectOption: event => {
+              onSelectOption: (event) => {
                 console.log("Clicked on code!")
                 this.showModal(event)
-              }
+              },
             })
           : Icon({
               name: "task",
-              onSelectOption: event => {
+              onSelectOption: (event) => {
                 console.log("Clicked on code!")
                 this.showModal(event)
-              }
+              },
             })}
       </span>
     )
@@ -121,64 +119,64 @@ class TaskView extends React.Component<Props, State> {
     return (
       <div
         style={{
-          padding: "3px 5px 3px 5px"
+          padding: "3px 5px 3px 5px",
         }}>
         <div
           style={{
-            display: "flex"
+            display: "flex",
           }}>
           <div>
             {Icon({
               name: "task",
-              onSelectOption: event => {
+              onSelectOption: (event) => {
                 console.log("Clicked on code!")
                 this.showModal(event)
-              }
+              },
             })}
           </div>
           <div
             style={{
-              margin: "0px 8px 0px 8px"
+              margin: "0px 8px 0px 8px",
             }}>
             Some specific task
           </div>
         </div>
         <div
           style={{
-            display: "flex"
+            display: "flex",
           }}>
           <div>
             {Icon({
               name: "task",
-              onSelectOption: event => {
+              onSelectOption: (event) => {
                 console.log("Clicked on code!")
                 this.showModal(event)
-              }
+              },
             })}
           </div>
           <div
             style={{
-              margin: "0px 8px 0px 8px"
+              margin: "0px 8px 0px 8px",
             }}>
             Some specific task
           </div>
         </div>
         <div
           style={{
-            display: "flex"
+            display: "flex",
           }}>
           <div>
             {Icon({
               name: "task",
-              onSelectOption: event => {
+              onSelectOption: (event) => {
                 console.log("Clicked on code!")
                 this.showModal(event)
-              }
+              },
             })}
           </div>
           <div
             style={{
-              margin: "0px 8px 0px 8px"
+              margin: "0px 8px 0px 8px",
             }}>
             Some specific task
           </div>
@@ -187,7 +185,7 @@ class TaskView extends React.Component<Props, State> {
     )
   }
 
-  private handleSelectTask = event => {
+  private handleSelectTask = (event) => {
     this.handleChangeMode("block")
   }
 
@@ -195,36 +193,36 @@ class TaskView extends React.Component<Props, State> {
     console.log(`Setting workflow mode: ${mode}`)
     this.props.dispatch({
       type: "SET_MODE",
-      mode
+      mode,
     })
   }
 
   // TODO: Turn this into a Redux action and allow the different modals' states
   // to be saved, and their initial state to be reset.
-  private showModal = event => {
+  private showModal = (event) => {
     this.props.dispatch({
       type: "OPEN_MODAL",
       view: (
         <ModalScroller title="dumb! ...add assign operation to select coder or role/specialty/skill set." />
-      )
+      ),
     })
     this.props.dispatch({
-      type: "CLOSE_MENU"
+      type: "CLOSE_MENU",
     })
   }
 
-  private handleMouseEnter = enter => {
+  private handleMouseEnter = (enter) => {
     this.props.dispatch({
       type: SET_FOCUS_TASK_ACTION,
-      view: this.props.taskView
+      view: this.props.taskView,
     })
     this.props.onTarget(this.props.taskView)
   }
 
-  private handleMouseLeave = event => {
+  private handleMouseLeave = (event) => {
     this.props.dispatch({
       type: UNSET_FOCUS_TASK_ACTION,
-      view: this.props.taskView
+      view: this.props.taskView,
     })
 
     this.props.onUntarget(this.props.taskView)
@@ -241,10 +239,10 @@ const mapStateToProps = (
   state: IState,
   componentProps: IComponentProps
 ): IStateProps => ({
-  taskValue: Object.values(state.tasks).filter(task => {
+  taskValue: Object.values(state.tasks).filter((task) => {
     return task.id === componentProps.id
   })[0],
-  taskView: state.views[componentProps.view] as ITaskView
+  taskView: state.views[componentProps.view] as ITaskView,
 })
 
 function mapDispatchToProps(dispatch) {

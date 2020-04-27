@@ -3,7 +3,7 @@ import { connect, DispatchProp } from "react-redux"
 import { Draggable } from "react-smooth-dnd"
 import { INote, INoteView, IState } from "../types"
 import * as styles from "./NoteView.style"
-import Ico from "./Ico"
+import Icon from "./Icon"
 import Editor from "./Editor"
 import ModalScroller from "./ModalScroller"
 
@@ -40,7 +40,7 @@ class Note extends React.Component<Props, State> {
 
   public render() {
     const noteStyle = {
-      ...styles.container
+      ...styles.container,
       // ...{
       //   opacity: Math.random() < 0.1 ? 0.5 : null
       // },
@@ -76,7 +76,7 @@ class Note extends React.Component<Props, State> {
       // ...{
       //   opacity: Math.random() < 0.1 ? 0.5 : null
       // },
-      ...(this.props.noteView.hasFocus ? { backgroundColor: "#e0e0e0" } : {})
+      ...(this.props.noteView.hasFocus ? { backgroundColor: "#e0e0e0" } : {}),
     }
     return (
       <Draggable key={this.props.key}>
@@ -85,7 +85,7 @@ class Note extends React.Component<Props, State> {
             ...noteStyle,
             backgroundColor: this.props.isPrimaryPointerReference
               ? "#f0f0f0"
-              : noteStyle.backgroundColor
+              : noteStyle.backgroundColor,
           }}
           onClick={this.handleMouseClick}
           onMouseEnter={this.handleMouseEnter}
@@ -102,12 +102,10 @@ class Note extends React.Component<Props, State> {
     return (
       <span
         style={{
-          ...styles.name
+          ...styles.name,
         }}>
         {this.props.noteValue.notes && this.props.noteValue.notes.length > 0
-          ? `${this.props.noteValue.name} (${
-              this.props.noteValue.notes.length
-            })`
+          ? `${this.props.noteValue.name} (${this.props.noteValue.notes.length})`
           : this.props.noteValue.name}
       </span>
     )
@@ -117,7 +115,7 @@ class Note extends React.Component<Props, State> {
     return (
       <span
         style={{
-          marginLeft: "auto"
+          marginLeft: "auto",
         }}>
         {/* {Ico({
           name: "code",
@@ -127,20 +125,20 @@ class Note extends React.Component<Props, State> {
           }
         })} */}
         {this.props.noteValue.notes.length > 1
-          ? Ico({
+          ? Icon({
               name: "compositeCode",
-              onSelectOption: event => {
+              onSelectOption: (event) => {
                 console.log("Clicked on code!!!!!!!!!!!!")
                 this.showModal(event)
                 // event.stopPropagation();
-              }
+              },
             })
-          : Ico({
+          : Icon({
               name: "code",
-              onSelectOption: event => {
+              onSelectOption: (event) => {
                 console.log("Clicked on code!!!!!!!!!!!!")
                 this.showModal(event)
-              }
+              },
             })}
       </span>
     )
@@ -148,19 +146,19 @@ class Note extends React.Component<Props, State> {
 
   // TODO: Turn this into a Redux action and allow the different modals' states
   // to be saved, and their initial state to be reset.
-  private showModal = event => {
+  private showModal = (event) => {
     this.props.dispatch({
       type: "OPEN_MODAL",
       ...(this.props.noteValue.notes.length > 1
         ? { view: <ModalScroller title="Expand note!" /> }
-        : { view: <Editor /> })
+        : { view: <Editor /> }),
     })
     this.props.dispatch({
-      type: "CLOSE_MENU"
+      type: "CLOSE_MENU",
     })
   }
 
-  private handleMouseClick = event => {
+  private handleMouseClick = (event) => {
     // this.props.dispatch({
     //   type: "SET_POINTER_REFERENCE_NOTE_VIEW",
     //   referenceNotebookEntry: this
@@ -182,10 +180,10 @@ class Note extends React.Component<Props, State> {
     // this.props.dispatch({ type: "CREATE_NOTE" });
   }
 
-  private handleMouseEnter = event => {
+  private handleMouseEnter = (event) => {
     this.props.dispatch({
       type: "SET_FOCUS_NOTE",
-      view: this.props.noteView
+      view: this.props.noteView,
     })
 
     this.props.onTarget(this.props.noteView)
@@ -195,10 +193,10 @@ class Note extends React.Component<Props, State> {
     // this.props.dispatch({ type: "CREATE_NOTE" });
   }
 
-  private handleMouseLeave = event => {
+  private handleMouseLeave = (event) => {
     this.props.dispatch({
       type: "UNSET_FOCUS_NOTE",
-      view: this.props.noteView
+      view: this.props.noteView,
     })
 
     this.props.onUntarget(this.props.noteView)
@@ -216,16 +214,16 @@ const mapStateToProps = (
   componentProps: IComponentProps
 ): IStateProps => ({
   // TODO(@mgub): Refactor to get note object from a dictionary (or ES index).
-  noteValue: Object.values(state.notes).filter(note => {
+  noteValue: Object.values(state.notes).filter((note) => {
     return note.id === componentProps.id
   })[0],
   noteView: state.views[componentProps.view] as INoteView,
   // View state.
   isPrimaryPointerReference:
     state.pointerReferrenceNote ===
-    Object.values(state.notes).filter(note => {
+    Object.values(state.notes).filter((note) => {
       return note.id === componentProps.id
-    })[0]
+    })[0],
 })
 
 export default connect<IStateProps, IDispatchProps, IComponentProps>(

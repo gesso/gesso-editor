@@ -3,7 +3,7 @@ import { connect, DispatchProp } from "react-redux"
 import { Draggable } from "react-smooth-dnd"
 import { IBlock, IBlockView, IState } from "../types"
 import * as styles from "./BlockView.styles"
-import Ico from "./Ico"
+import Icon from "./Icon"
 import Editor from "./Editor"
 import ModalScroller from "./ModalScroller"
 
@@ -52,7 +52,7 @@ class Block extends React.Component<Props, State> {
       // ...{
       //   opacity: Math.random() < 0.1 ? 0.5 : null
       // },
-      ...(this.props.blockView.hasFocus ? { backgroundColor: "#e0e0e0" } : {})
+      ...(this.props.blockView.hasFocus ? { backgroundColor: "#e0e0e0" } : {}),
     }
     return (
       <Draggable key={this.props.key}>
@@ -61,7 +61,7 @@ class Block extends React.Component<Props, State> {
             ...blockStyle,
             backgroundColor: this.props.isPrimaryPointerReference
               ? "#f0f0f0"
-              : blockStyle.backgroundColor
+              : blockStyle.backgroundColor,
           }}
           onClick={this.handleMouseClick}
           onMouseEnter={this.handleMouseEnter}
@@ -78,12 +78,10 @@ class Block extends React.Component<Props, State> {
     return (
       <span
         style={{
-          ...styles.name
+          ...styles.name,
         }}>
         {this.props.blockValue.blocks && this.props.blockValue.blocks.length > 0
-          ? `${this.props.blockValue.name} (${
-              this.props.blockValue.blocks.length
-            })`
+          ? `${this.props.blockValue.name} (${this.props.blockValue.blocks.length})`
           : this.props.blockValue.name}
       </span>
     )
@@ -93,7 +91,7 @@ class Block extends React.Component<Props, State> {
     return (
       <span
         style={{
-          marginLeft: "auto"
+          marginLeft: "auto",
         }}>
         {/* {Ico({
           name: "code",
@@ -103,20 +101,20 @@ class Block extends React.Component<Props, State> {
           }
         })} */}
         {this.props.blockValue.blocks.length > 1
-          ? Ico({
+          ? Icon({
               name: "compositeCode",
-              onSelectOption: event => {
+              onSelectOption: (event) => {
                 console.log("Clicked on code!!!!!!!!!!!!")
                 this.showModal(event)
                 // event.stopPropagation();
-              }
+              },
             })
-          : Ico({
+          : Icon({
               name: "code",
-              onSelectOption: event => {
+              onSelectOption: (event) => {
                 console.log("Clicked on code!!!!!!!!!!!!")
                 this.showModal(event)
-              }
+              },
             })}
       </span>
     )
@@ -124,19 +122,19 @@ class Block extends React.Component<Props, State> {
 
   // TODO: Turn this into a Redux action and allow the different modals' states
   // to be saved, and their initial state to be reset.
-  private showModal = event => {
+  private showModal = (event) => {
     this.props.dispatch({
       type: "OPEN_MODAL",
       ...(this.props.blockValue.blocks.length > 1
         ? { view: <ModalScroller title="Expand block!" /> }
-        : { view: <Editor /> })
+        : { view: <Editor /> }),
     })
     this.props.dispatch({
-      type: "CLOSE_MENU"
+      type: "CLOSE_MENU",
     })
   }
 
-  private handleMouseClick = event => {
+  private handleMouseClick = (event) => {
     // this.props.dispatch({
     //   type: "SET_POINTER_REFERENCE_BLOCK_VIEW",
     //   referenceBlock: this
@@ -158,10 +156,10 @@ class Block extends React.Component<Props, State> {
     // this.props.dispatch({ type: "CREATE_BLOCK" });
   }
 
-  private handleMouseEnter = event => {
+  private handleMouseEnter = (event) => {
     this.props.dispatch({
       type: "SET_FOCUS_BLOCK",
-      view: this.props.blockView
+      view: this.props.blockView,
     })
 
     this.props.onTarget(this.props.blockView)
@@ -171,10 +169,10 @@ class Block extends React.Component<Props, State> {
     // this.props.dispatch({ type: "CREATE_BLOCK" });
   }
 
-  private handleMouseLeave = event => {
+  private handleMouseLeave = (event) => {
     this.props.dispatch({
       type: "UNSET_FOCUS_BLOCK",
-      view: this.props.blockView
+      view: this.props.blockView,
     })
 
     this.props.onUntarget(this.props.blockView)
@@ -192,16 +190,16 @@ const mapStateToProps = (
   componentProps: IComponentProps
 ): IStateProps => ({
   // TODO(@mgub): Refactor to get block object from a dictionary (or ES index).
-  blockValue: Object.values(state.blocks).filter(block => {
+  blockValue: Object.values(state.blocks).filter((block) => {
     return block.id === componentProps.id
   })[0],
   blockView: state.views[componentProps.view] as IBlockView,
   // View state.
   isPrimaryPointerReference:
     state.pointerReferenceBlock ===
-    Object.values(state.blocks).filter(block => {
+    Object.values(state.blocks).filter((block) => {
       return block.id === componentProps.id
-    })[0]
+    })[0],
 })
 
 export default connect<IStateProps, IDispatchProps, IComponentProps>(

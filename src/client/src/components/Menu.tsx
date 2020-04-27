@@ -28,13 +28,6 @@ class LayoutView extends React.Component<Props, {}> {
     return (
       <div style={styles.menu}>
         {/* <MenuOption
-          label="info" // prev., "data"
-          onClick={this.handleClickModeOption(
-            "show data sources selectable, network interfaces (HTTP), camera, etc. Provide data inputs for use in coding and mixing modes."
-          )}
-        />
-        <div style={styles.menuOption}>&rarr;</div> */}
-        {/* <MenuOption
           label="code"
           onClick={this.handleClickModeOption(
             "show code editor and make _all_ blocks searchable and browsable (with tabs?)"
@@ -45,27 +38,10 @@ class LayoutView extends React.Component<Props, {}> {
           label="logic" // prev., "work", "mix", "browse", "intelligence" <- "block/frame"
           onClick={this.handleClickModeOption("block")}
         />
-        {/* <div style={styles.menuOption}>&rarr;</div>
-        <MenuOption
-          label="flow" // prev., "workflow", "interface", "design"
-          onClick={this.handleClickModeOption(
-            "map tasks onto interactive graphical interfaces (based on React)"
-          )}
-        /> */}
         <div style={styles.menuOption}>&rarr;</div>
         <MenuOption label="task" onClick={this.handleClickModeOption("task")} />
         <div style={styles.menuOption}>&rarr;</div>
         <MenuOption label="note" onClick={this.handleClickModeOption("note")} />
-        {/* <div style={styles.menuOption}>&rarr;</div> */}
-        {/* <MenuOption
-          label="plan" // was "flow", "schematic"
-          onClick={this.handleClickModeOption("map tasks onto runners (Node)")}
-        />
-        <div style={styles.menuOption}>&rarr;</div> */}
-        {/* <MenuOption
-          label="publish" // was "deploy"
-          onClick={this.handleClickModeOption("publish")}
-        /> */}
       </div>
     )
   }
