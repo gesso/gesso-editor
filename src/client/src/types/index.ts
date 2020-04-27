@@ -17,27 +17,18 @@ export interface IBlock {
   // TODO(@mgub): Refactor to only include only list of block identifiers and load them from the Redux store.
 }
 
-export interface ITask {
-  id: string
-  name: string
-  tasks?: ITask[]
-  // TODO(@mgub): Refactor to only include only list of block identifiers and load them from the Redux store.
-}
-
 // TODO: IHorizontalLayout (contains IColumnLayouts)
 // export type IBlockLayoutView = IBlockLayoutView | ITaskLayoutView
+export interface IBlockView {
+  id: string
+  blockId: string
+  hasFocus: boolean
+}
 
 export interface IBlockLayoutView {
   id: string
   name: string
   columnViews: IBlockLayoutColumnView[]
-  views: IViewStore
-}
-
-export interface ITaskLayoutView {
-  id: string
-  name: string
-  columnViews: ITaskLayoutColumnView[]
   views: IViewStore
 }
 
@@ -48,16 +39,11 @@ export interface IBlockLayoutColumnView {
   blockViews?: IBlockView[]
 }
 
-export interface ITaskLayoutColumnView {
+export interface ITask {
   id: string
-  name: string // TODO(@mgub): Make optional.
-  taskViews?: ITaskView[]
-}
-
-export interface IBlockView {
-  id: string
-  blockId: string
-  hasFocus: boolean
+  name: string
+  tasks?: ITask[]
+  // TODO(@mgub): Refactor to only include only list of block identifiers and load them from the Redux store.
 }
 
 export interface ITaskView {
@@ -66,11 +52,75 @@ export interface ITaskView {
   hasFocus: boolean
 }
 
+export interface ITaskLayoutView {
+  id: string
+  name: string
+  columnViews: ITaskLayoutColumnView[]
+  views: IViewStore
+}
+
+export interface ITaskLayoutColumnView {
+  id: string
+  name: string // TODO(@mgub): Make optional.
+  taskViews?: ITaskView[]
+}
+
+export interface INote {
+  id: string
+  name: string
+  notes?: INote[]
+}
+
+export interface INoteLayoutView {
+  id: string
+  name: string
+  views: IViewStore
+  noteViews?: INoteView[]
+}
+
+export interface INoteView {
+  id: string
+  noteId: string
+  hasFocus: boolean
+}
+
+// ----------------------------------------------------------------------------
+//
+//  Modes.
+//
+// ----------------------------------------------------------------------------
+
 type BlockType = "block"
 
 type TaskType = "task"
 
-export type ModeType = BlockType | TaskType
+type CodeType = "code"
+
+type NoteType = "note"
+
+export interface IBlockMode {
+  type: BlockType
+}
+
+export interface ITaskMode {
+  type: BlockType
+}
+
+export interface IEditorMode {
+  type: CodeType
+}
+
+export interface INoteMode {
+  type: NoteType
+}
+
+export type ModeType = CodeType | BlockType | TaskType | NoteType
+
+export type IMode = IBlockMode | ITaskMode | IEditorMode | INoteMode
+
+// export interface IApplication {
+//   mode: IMode
+// }
 
 // ----------------------------------------------------------------------------
 //
@@ -81,10 +131,13 @@ export type ModeType = BlockType | TaskType
 export interface IState {
   blocks: IBlockMap
   tasks: ITaskMap
+  notes: INoteMap
   layout: IBlockLayoutView
   taskLayout: ITaskLayoutView
+  noteLayout: INoteLayoutView
   targetBlock: IBlockView
   pointerReferenceBlock: IBlockView
+  pointerReferrenceNote: INoteView
   targetTask: ITaskView
   views: IViewStore
   mode: ModeType
@@ -109,15 +162,17 @@ interface IActions {
   block: IBlockActions
 }
 
-interface IBlockMap {
-  [id: number]: IBlock
+interface IEntityMap<T> {
+  [id: number]: T
 }
 
-interface ITaskMap {
-  [id: number]: ITask
-}
+type IBlockMap = IEntityMap<IBlock>
 
-export type View = IBlockView | ITaskView
+type ITaskMap = IEntityMap<ITask>
+
+type INoteMap = IEntityMap<INote>
+
+export type View = IBlockView | ITaskView | INoteView
 
 export interface IViewStore {
   [index: string]: View
@@ -155,6 +210,10 @@ export interface IHandleDropTaskAction {
   removedIndex: any
   targetTask: any
   layoutValue: any
+}
+
+export interface ICreateBlockActionMessage {
+  type: "CREATE_BLOCK"
 }
 
 export type ActionType = IHandleDropAction

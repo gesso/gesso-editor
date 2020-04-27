@@ -9,7 +9,10 @@ import {
   ITaskLayoutView,
   ITask,
   ITaskView,
-  ITaskLayoutColumnView
+  ITaskLayoutColumnView,
+  INote,
+  INoteLayoutView,
+  INoteView
 } from "../types"
 
 // ----------------------------------------------------------------------------
@@ -32,6 +35,14 @@ export const generateTasks = (count: number): ITask[] => {
     tasks.push(generateTask(true, 0.9))
   }
   return tasks
+}
+
+export const generateNotes = (count: number): INote[] => {
+  const notes: INote[] = []
+  for (let i = 0; i < count; i++) {
+    notes.push(generateNote(true, 0.9))
+  }
+  return notes
 }
 
 interface IGenerateBlockLayoutInput {
@@ -138,6 +149,57 @@ export const generateTaskViewLayout = (
   return layout
 }
 
+interface IGenerateNoteLayoutInput {
+  minColumnCount: number
+  maxColumnCount: number
+  notes: INote[]
+}
+
+export const generateNoteViewLayout = (
+  input: IGenerateNoteLayoutInput
+): INoteLayoutView => {
+  const columnCount = 1
+  // TODO(@mgub): Add random factor to list length.
+  const notesPerColumnCount = input.notes.length / columnCount
+  const layout: INoteLayoutView = {
+    id: uuidv4(),
+    name: projectNameGenerator({ words: 2, number: false }).dashed,
+    views: {},
+    noteViews: []
+  }
+  // TODO(@mgub): Generate layout.
+  _.times(columnCount, index => {
+    // Create views for tasks.
+    const noteViews: INoteView[] = input.notes
+      .slice(
+        index * notesPerColumnCount,
+        index * notesPerColumnCount + notesPerColumnCount
+      )
+      .map(task => {
+        return {
+          noteId: task.id,
+          id: uuidv4(),
+          hasFocus: false
+        } as INoteView
+      })
+    // Save task views.
+    _.each(noteViews, taskView => {
+      layout.views[taskView.id] = taskView
+    })
+    // Create column layout.
+    // const columnLayout: ITaskLayoutColumnView = {
+    //   taskViews,
+    //   id: uuidv4(),
+    //   name: projectNameGenerator({ words: 2, number: false }).dashed
+    // }
+    // Add column to layout.
+    layout.noteViews.push(...noteViews)
+  })
+  console.log("Task Layout: ")
+  console.log(JSON.stringify(layout, null, 2))
+  return layout
+}
+
 export const generateBlock = (
   withChildren = true,
   childrenWithChildrenProbability = 0
@@ -169,6 +231,26 @@ export const generateTask = (
       withChildren && Math.random() <= childrenWithChildrenProbability
         ? _.times(Math.random() * 10).map(index => {
             return generateTask(true, 0.5 * childrenWithChildrenProbability)
+          })
+        : []
+  }
+}
+
+export const generateNote = (
+  withChildren = true,
+  childrenWithChildrenProbability = 0
+): INote => {
+  const noteNameWordCount = 50 + Math.random() * 3
+  return {
+    id: uuidv4(),
+    name: projectNameGenerator({
+      words: noteNameWordCount,
+      number: false
+    }).spaced,
+    notes:
+      withChildren && Math.random() <= childrenWithChildrenProbability
+        ? _.times(Math.random() * 10).map(index => {
+            return generateNote(true, 0.5 * childrenWithChildrenProbability)
           })
         : []
   }

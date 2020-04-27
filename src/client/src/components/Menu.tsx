@@ -2,7 +2,7 @@ import * as React from "react"
 import { connect, DispatchProp } from "react-redux"
 import * as styles from "./Menu.style"
 import MenuOption from "./MenuOption"
-import { ModeType, IMenuState, IState } from "../types"
+import { IMode, ModeType, IMenuState, IState } from "../types"
 
 // Component props.
 export interface IComponentProps {
@@ -27,54 +27,51 @@ class LayoutView extends React.Component<Props, {}> {
   public render() {
     return (
       <div style={styles.menu}>
-        <MenuOption
+        {/* <MenuOption
           label="info" // prev., "data"
           onClick={this.handleClickModeOption(
             "show data sources selectable, network interfaces (HTTP), camera, etc. Provide data inputs for use in coding and mixing modes."
           )}
         />
-        <div style={styles.menuOption}>&rarr;</div>
-        <MenuOption
+        <div style={styles.menuOption}>&rarr;</div> */}
+        {/* <MenuOption
           label="code"
           onClick={this.handleClickModeOption(
             "show code editor and make _all_ blocks searchable and browsable (with tabs?)"
           )}
         />
-        <div style={styles.menuOption}>&rarr;</div>
+        <div style={styles.menuOption}>&rarr;</div> */}
         <MenuOption
-          label="work" // prev., "mix", "browse", "intelligence" <- "block/frame"
+          label="logic" // prev., "work", "mix", "browse", "intelligence" <- "block/frame"
           onClick={this.handleClickModeOption("block")}
         />
-        <div style={styles.menuOption}>&rarr;</div>
+        {/* <div style={styles.menuOption}>&rarr;</div>
         <MenuOption
           label="flow" // prev., "workflow", "interface", "design"
           onClick={this.handleClickModeOption(
             "map tasks onto interactive graphical interfaces (based on React)"
           )}
-        />
+        /> */}
         <div style={styles.menuOption}>&rarr;</div>
         <MenuOption label="task" onClick={this.handleClickModeOption("task")} />
         <div style={styles.menuOption}>&rarr;</div>
-        <MenuOption
-          label="describe"
-          onClick={this.handleClickModeOption('context (e.g., "app server")')}
-        />
-        <div style={styles.menuOption}>&rarr;</div>
-        <MenuOption
+        <MenuOption label="note" onClick={this.handleClickModeOption("note")} />
+        {/* <div style={styles.menuOption}>&rarr;</div> */}
+        {/* <MenuOption
           label="plan" // was "flow", "schematic"
           onClick={this.handleClickModeOption("map tasks onto runners (Node)")}
         />
-        <div style={styles.menuOption}>&rarr;</div>
-        <MenuOption
+        <div style={styles.menuOption}>&rarr;</div> */}
+        {/* <MenuOption
           label="publish" // was "deploy"
           onClick={this.handleClickModeOption("publish")}
-        />
+        /> */}
       </div>
     )
   }
 
-  private handleClickModeOption = mode => {
-    return event => {
+  private handleClickModeOption = (mode) => {
+    return (event) => {
       event.stopPropagation()
       this.setMode(mode)
     }
@@ -82,7 +79,7 @@ class LayoutView extends React.Component<Props, {}> {
 
   private setMode = (mode: ModeType) => {
     this.setState({
-      mode
+      mode,
     })
     if (this.props.onChangeMode) {
       this.props.onChangeMode(mode)
@@ -95,7 +92,7 @@ const mapStateToProps = (
   state: IState,
   componentProps: IComponentProps
 ): IStateProps => ({
-  menu: state.menu
+  menu: state.menu,
 })
 
 export default connect<IStateProps, IDispatchProps, IComponentProps>(

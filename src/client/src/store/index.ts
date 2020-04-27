@@ -11,7 +11,8 @@ import {
   IBlock,
   ITask,
   ModeType,
-  IBlockLayoutColumnView
+  IBlockLayoutColumnView,
+  INote
 } from "../types"
 import {
   SET_LAYOUT_ACTION,
@@ -34,25 +35,38 @@ import {
   OPEN_MENU_ACTION,
   CLOSE_MENU_ACTION,
   OPEN_MODAL_ACTION,
-  CLOSE_MODAL_ACTION
+  CLOSE_MODAL_ACTION,
+  HANDLE_DROP_NOTE_ACTION,
+  SET_FOCUS_NOTE_ACTION,
+  UNSET_FOCUS_NOTE_ACTION,
+  SET_TARGET_NOTE_VIEW_ACTION,
+  RESET_TARGET_NOTE_VIEW_ACTION
 } from "./actions"
 import * as utils from "../utils"
 
-// Actions
+// ----------------------------------------------------------------------------
+//
+//  Actions.
+//
+// ----------------------------------------------------------------------------
 
 const blocks: IBlock[] = database.fetchBlocks(40)
 const tasks: ITask[] = database.fetchTasks(20)
+const notes: INote[] = database.fetchNotes(20)
 
 const initialState: IState = {
   blocks,
   tasks,
+  notes,
   layout: null,
   taskLayout: null,
+  noteLayout: null,
   targetBlock: null,
   pointerReferenceBlock: null,
+  pointerReferrenceNote: null,
   targetTask: null,
   views: null,
-  mode: "block",
+  mode: "task",
   menu: {
     isVisible: true
   },
@@ -113,6 +127,16 @@ const reducer = (
       return setTargetTaskView(state, action)
     case RESET_TARGET_TASK_VIEW_ACTION:
       return resetTargetTaskView(state, action)
+    case HANDLE_DROP_NOTE_ACTION:
+      return handleDropNote(state, action)
+    case SET_FOCUS_NOTE_ACTION:
+      return setFocusNote(state, action)
+    case UNSET_FOCUS_NOTE_ACTION:
+      return unsetFocusNote(state, action)
+    case SET_TARGET_NOTE_VIEW_ACTION:
+      return setTargetNoteView(state, action)
+    case RESET_TARGET_NOTE_VIEW_ACTION:
+      return resetTargetNoteView(state, action)
     case OPEN_MENU_ACTION:
       return openMenu(state, action)
     case CLOSE_MENU_ACTION:
@@ -128,7 +152,7 @@ const reducer = (
 
 // ----------------------------------------------------------------------------
 //
-//  Layout.
+//  Actions: Mode.
 //
 // ----------------------------------------------------------------------------
 
@@ -140,18 +164,34 @@ const setMode = (state: IState, action) => {
   }
 }
 
+// ----------------------------------------------------------------------------
+//
+//  Actions: Layout.
+//
+// ----------------------------------------------------------------------------
+
 const setLayout = (state: IState, action) => {
   return {
     ...state,
     layout: action.layout,
     taskLayout: action.taskLayout,
+    noteLayout: action.noteLayout,
     views: {
+      // <REFACTOR>
       ...state.views,
       ...action.layout.views,
-      ...action.taskLayout.views
+      ...action.taskLayout.views,
+      ...action.noteLayout.views
+      // </REFACTOR>
     }
   }
 }
+
+// ----------------------------------------------------------------------------
+//
+//  Actions: Menu.
+//
+// ----------------------------------------------------------------------------
 
 const openMenu = (state: IState, action) => {
   console.log("OPEN_MENU")
@@ -175,6 +215,12 @@ const closeMenu = (state: IState, action) => {
   }
 }
 
+// ----------------------------------------------------------------------------
+//
+//  Actions: Modal.
+//
+// ----------------------------------------------------------------------------
+
 const openModal = (state: IState, action) => {
   console.log("OPEN_MODAL")
   return {
@@ -197,6 +243,12 @@ const closeModal = (state: IState, action) => {
     }
   }
 }
+
+// ----------------------------------------------------------------------------
+//
+//  Actions: Drag and drop.
+//
+// ----------------------------------------------------------------------------
 
 const handleDropBlockColumnLayout = (
   state: IState,
@@ -389,6 +441,12 @@ const handleDropBlock = (state: IState, action: IHandleDropBlockAction) => {
 //   return
 // }
 
+// ----------------------------------------------------------------------------
+//
+//  Actions: Focus.
+//
+// ----------------------------------------------------------------------------
+
 const setTargetBlockView = (state: IState, action) => {
   return {
     ...state,
@@ -557,7 +615,10 @@ const handleDropTaskColumnLayout = (
   // }
 }
 
-const handleDropTask = (state: IState, action: IHandleDropTaskAction) => {
+const handleDropTask = (
+  state: IState,
+  action: IHandleDropTaskAction
+): IState => {
   console.log("handleDropTask")
   const {
     addedIndex,
@@ -648,7 +709,17 @@ const handleDropTask = (state: IState, action: IHandleDropTaskAction) => {
         ...state.layout,
         columnViews: reorderedColumnLayouts
       }
-    } as IState
+    }
+  }
+}
+
+const handleDropNote = (
+  state: IState,
+  action: IHandleDropTaskAction
+): IState => {
+  // TODO(@mgub): Implement drop action.
+  return {
+    ...state
   }
 }
 
@@ -660,6 +731,20 @@ const setTargetTaskView = (state: IState, action) => {
 }
 
 const resetTargetTaskView = (state: IState, action) => {
+  return {
+    ...state,
+    targetTask: null
+  }
+}
+
+const setTargetNoteView = (state: IState, action) => {
+  return {
+    ...state,
+    targetNote: action.targetNote
+  }
+}
+
+const resetTargetNoteView = (state: IState, action) => {
   return {
     ...state,
     targetTask: null
@@ -737,12 +822,43 @@ const unsetFocusTask = (state: IState, action) => {
   }
 }
 
+const setFocusNote = (state: IState, action) => {
+  const { view } = action
+  return {
+    ...state,
+    views: {
+      ...state.views,
+      [view.id]: {
+        ...view,
+        hasFocus: true
+      }
+    }
+  }
+}
+
+const unsetFocusNote = (state: IState, action) => {
+  const { view } = action
+  return {
+    ...state,
+    views: {
+      ...state.views,
+      [view.id]: {
+        ...view,
+        hasFocus: false
+      }
+    }
+  }
+}
+
 // Create Redux store.
 // TODO(mgub): Enable Redux store.
+/* eslint-disable no-underscore-dangle */
 export const store = createStore(
-  reducer
-  // window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+  reducer,
+  // @ts-ignore: Unreachable code error
+  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 )
+/* eslint-enable */
 
 // Reference:
 // - https://medium.com/@resir014/a-type-safe-approach-to-redux-stores-in-typescript-6474e012b81e
@@ -763,6 +879,7 @@ export const getStore = () => {
 store.dispatch({
   type: "SET_LAYOUT",
   layout: database.fetchBlockViewLayout(5, blocks),
-  taskLayout: database.fetchTaskViewLayout(4, 4, tasks)
+  taskLayout: database.fetchTaskViewLayout(4, 4, tasks),
+  noteLayout: database.fetchNoteViewLayout(4, 4, notes)
 })
 // }

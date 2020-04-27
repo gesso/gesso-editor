@@ -19,7 +19,12 @@ import {
   OpenMenuActionString,
   CloseMenuActionString,
   OpenModalActionString,
-  CloseModalActionString
+  CloseModalActionString,
+  HandleDropNoteActionString,
+  SetFocusNoteActionString,
+  UnsetFocusNoteActionString,
+  SetTargetNoteViewActionString,
+  ResetTargetNoteViewActionString
 } from "./types"
 
 // Application layout actions.
@@ -55,6 +60,17 @@ export const SET_TARGET_TASK_VIEW_ACTION: SetTargetTaskViewActionString =
   "SET_TARGET_TASK_VIEW"
 export const RESET_TARGET_TASK_VIEW_ACTION: ResetTargetTaskViewActionString =
   "RESET_TARGET_TASK_VIEW"
+
+// Note actions.
+export const HANDLE_DROP_NOTE_ACTION: HandleDropNoteActionString =
+  "HANDLE_DROP_NOTE"
+export const SET_FOCUS_NOTE_ACTION: SetFocusNoteActionString = "SET_FOCUS_NOTE"
+export const UNSET_FOCUS_NOTE_ACTION: UnsetFocusNoteActionString =
+  "UNSET_FOCUS_NOTE"
+export const SET_TARGET_NOTE_VIEW_ACTION: SetTargetNoteViewActionString =
+  "SET_TARGET_NOTE_VIEW"
+export const RESET_TARGET_NOTE_VIEW_ACTION: ResetTargetNoteViewActionString =
+  "RESET_TARGET_NOTE_VIEW"
 
 // Interactivity actions.
 export const SET_POINTER_REFERENCE_BLOCK_VIEW_ACTION: SetPointerReferenceBlockViewActionString =

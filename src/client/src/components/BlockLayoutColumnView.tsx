@@ -8,6 +8,7 @@ import {
   IBlockLayoutColumnView,
   IHandleDropBlockAction,
   IBlockLayoutView,
+  ICreateBlockActionMessage,
   IState
 } from "../types"
 import BlockView from "./BlockView"
@@ -65,12 +66,20 @@ class ColumnLayout extends React.Component<Props, {}> {
               fontSize: "12px",
               textAlign: "center",
               padding: "5px 10px 5px 10px"
-            }}>
+            }}
+            onClick={this.handleCreateBlock}>
             new
           </div>
         </div>
       </Draggable>
     )
+  }
+
+  private handleCreateBlock = event => {
+    console.log("Create block.")
+    this.props.dispatch({
+      type: "CREATE_BLOCK"
+    } as ICreateBlockActionMessage)
   }
 
   private handleGetChildPayload = (blockViews: IBlockView[]) => {

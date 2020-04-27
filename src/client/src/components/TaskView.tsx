@@ -5,6 +5,7 @@ import { ITask, ITaskView, IState } from "../types"
 import * as styles from "./TaskView.styles"
 import Icon from "./Ico"
 import ModalScroller from "./ModalScroller"
+import { ModeType } from "../types"
 
 import { Icon as Icon2 } from "react-icons-kit"
 import { iosArrowForward } from "react-icons-kit/ionicons/"
@@ -81,8 +82,10 @@ class TaskView extends React.Component<Props, State> {
         style={{
           ...styles.name,
           margin: "0px 8px 0px 8px",
-          width: "100%"
-        }}>
+          width: "100%",
+          fontWeight: 600
+        }}
+        onClick={this.handleSelectTask}>
         {this.props.taskValue.tasks && this.props.taskValue.tasks.length > 0
           ? `${this.props.taskValue.name} (${
               this.props.taskValue.tasks.length
@@ -182,6 +185,18 @@ class TaskView extends React.Component<Props, State> {
         </div>
       </div>
     )
+  }
+
+  private handleSelectTask = event => {
+    this.handleChangeMode("block")
+  }
+
+  private handleChangeMode = (mode: ModeType) => {
+    console.log(`Setting workflow mode: ${mode}`)
+    this.props.dispatch({
+      type: "SET_MODE",
+      mode
+    })
   }
 
   // TODO: Turn this into a Redux action and allow the different modals' states

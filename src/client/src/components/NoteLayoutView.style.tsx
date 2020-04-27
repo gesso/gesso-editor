@@ -5,6 +5,7 @@ export const styles = {
     alignItems: "center",
     // backgroundColor: "red",
     display: "flex",
+    flexDirection: "column",
     height: "100%",
     width: "100%",
     justifyContent: "center",
@@ -12,16 +13,13 @@ export const styles = {
     transition: "all .5s linear",
     overflowX: "auto",
     whiteSpace: "nowrap",
-    overflowY: "auto",
+    overflowY: "auto"
   } as React.CSSProperties,
-
   layoutContainer2: {
     alignItems: "center",
-    // backgroundColor: "red",
+    flexDirection: "column",
     display: "flex",
-    justifyContent: "center",
-    margin: 0,
-    height: "100%",
+    margin: 0
   } as React.CSSProperties,
   layout: {
     border: "1px solid #e0e0e",
@@ -29,6 +27,6 @@ export const styles = {
     marginLeft: "20px",
     marginRight: "20px",
     minHeight: "50px",
-    width: "200px",
-  } as React.CSSProperties,
+    width: "200px"
+  } as React.CSSProperties
 }

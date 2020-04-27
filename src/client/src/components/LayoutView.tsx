@@ -2,9 +2,10 @@ import * as React from "react"
 import { connect, DispatchProp } from "react-redux"
 import BlockLayoutView from "./BlockLayoutView"
 import TaskLayoutView from "./TaskLayoutView"
+import NoteLayoutView from "./NoteLayoutView"
 import Menu from "./Menu"
 import Modal from "./Modal"
-import { ModeType } from "../types"
+import { IMode, ModeType } from "../types"
 import { IState } from "../types"
 import Editor from "./Editor"
 import CodeViewLayout from "./CodeViewLayout"
@@ -73,10 +74,13 @@ class LayoutContainer extends React.Component<Props, State> {
   }
 
   private renderLayoutView = () => {
+    console.log(this.props.mode)
     if (this.props.mode === "block") {
       return <BlockLayoutView />
     } else if (this.props.mode === "task") {
       return <TaskLayoutView />
+    } else if (this.props.mode === "note") {
+      return <NoteLayoutView />
     } else if (
       this.props.mode ===
       "show code editor and make _all_ blocks searchable and browsable (with tabs?)"
